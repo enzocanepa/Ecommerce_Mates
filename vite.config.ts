@@ -18,25 +18,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // React core
-          'vendor-react': ['react', 'react-dom', 'react-router'],
-          // Supabase
+          'vendor-react':   ['react', 'react-dom', 'react-router'],
           'vendor-supabase': ['@supabase/supabase-js'],
-          // Radix UI primitives (usados en toda la app)
-          'vendor-radix': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-select',
-            '@radix-ui/react-tooltip',
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-alert-dialog',
-            '@radix-ui/react-popover',
-            '@radix-ui/react-tabs',
-          ],
-          // Charts (solo usado en AdminDashboard)
-          'vendor-charts': ['recharts'],
-          // Animation + utils
-          'vendor-utils': ['motion', 'sonner', 'clsx', 'tailwind-merge', 'lucide-react'],
+          'vendor-utils':   ['sonner', 'clsx', 'tailwind-merge', 'lucide-react'],
         },
       },
     },

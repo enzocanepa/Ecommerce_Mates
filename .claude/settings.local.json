@@ -24,7 +24,11 @@
       "Bash(cp src/app/pages/CheckoutResult.tsx src/pages/CheckoutResult.tsx)",
       "Bash(cp src/app/pages/Home.tsx src/pages/Home.tsx)",
       "Bash(cp src/app/App.tsx src/App.tsx)",
-      "Bash(cp src/app/routes.tsx src/routes/AppRouter.tsx)"
+      "Bash(cp src/app/routes.tsx src/routes/AppRouter.tsx)",
+      "Bash(xargs wc *)",
+      "Bash(npm ls *)",
+      "Bash(npm install *)",
+      "Bash(npm audit *)"
     ]
   }
 }

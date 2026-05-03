@@ -28,7 +28,7 @@ export function Header() {
 
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold flex items-center gap-2 flex-shrink-0">
-            <img src="/logo.png" alt="Logo Mates Aconcagua" className="h-18 w-auto" />
+            <img src="/logo.webp" alt="Logo Mates Aconcagua" className="h-18 w-auto" />
           </Link>
 
           {/* Desktop: barra de búsqueda + links */}
