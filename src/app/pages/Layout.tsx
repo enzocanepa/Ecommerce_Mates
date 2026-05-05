@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import { Header } from '../components/Header';
-import ChatWidget from '../components/ChatWidget';
+import Chatbot from '../components/Chatbot'; // <-- El nuevo con n8n
 import { Toaster } from 'sonner';
 
 export function Layout() {
@@ -19,7 +19,7 @@ export function Layout() {
         </div>
       </footer>
       
-      <ChatWidget />
+      <Chatbot />
       <Toaster
         position="bottom-right"
         richColors
