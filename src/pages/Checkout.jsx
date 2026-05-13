@@ -88,7 +88,7 @@ export function Checkout() {
         sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
         sessionStorage.setItem('checkoutTotal', String(totalPrice));
         try {
-            const res = await fetch(`${BASE_URL}/checkout/create-preference`, {
+            const res = await fetch(`${BASE_URL}/api/checkout/create-preference`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

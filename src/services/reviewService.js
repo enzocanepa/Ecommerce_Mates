@@ -1,12 +1,13 @@
 import { apiRequest } from './api';
+
 export const reviewService = {
     getReviews(productId) {
-        return apiRequest(`/reviews/${productId}`);
+        return apiRequest(`/api/reviews/${productId}`);
     },
-    createReview(productId, review, token) {
-        return apiRequest(`/reviews/${productId}`, {
+    createReview(productId, rating, comment, token) {
+        return apiRequest('/api/reviews', {
             method: 'POST',
-            body: JSON.stringify(review),
+            body: JSON.stringify({ productId, rating, comment }),
         }, token);
     },
 };

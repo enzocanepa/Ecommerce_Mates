@@ -3,7 +3,11 @@
     "allow": [
       "PowerShell(cd \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\"; Get-ChildItem \"src-js\" -Recurse -File | Group-Object -Property Extension | ForEach-Object { \"$\\($_.Name\\): $\\($_.Count\\)\" })",
       "Bash(npm uninstall *)",
-      "PowerShell(head -50)"
+      "PowerShell(head -50)",
+      "Read(//c/Users/enzoc/Desktop/api/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\enzoc\\Desktop\\api\\api"
     ]
   }
 }

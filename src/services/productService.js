@@ -1,11 +1,11 @@
 import { apiRequest } from './api';
-import { supabaseAnonKey } from '../lib/supabase';
+
 export const productService = {
     getProducts() {
-        return apiRequest('/products', undefined, supabaseAnonKey);
+        return apiRequest('/api/products');
     },
     saveProducts(products, token) {
-        return apiRequest('/products', {
+        return apiRequest('/api/products', {
             method: 'POST',
             body: JSON.stringify({ products }),
         }, token);
