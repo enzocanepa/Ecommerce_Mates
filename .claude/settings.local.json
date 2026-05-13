@@ -28,7 +28,10 @@
       "Bash(xargs wc *)",
       "Bash(npm ls *)",
       "Bash(npm install *)",
-      "Bash(npm audit *)"
+      "Bash(npm audit *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(npx tsc *)"
     ]
   }
 }
