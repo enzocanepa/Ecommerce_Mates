@@ -1,19 +1,23 @@
-import { useParams, useNavigate, Link } from 'react-router';
+import { useParams, useNavigate, Link, useLocation } from 'react-router';
 import { useProducts } from '../context/ProductsContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { usePageSEO } from '../hooks/usePageSEO';
 import { ReviewsSection } from '../components/product/ReviewsSection';
-import { ShoppingCart, Check, ArrowLeft, ChevronLeft, ChevronRight, Package, Shield, Truck } from 'lucide-react';
+import { ShoppingCart, Check, ArrowLeft, ChevronLeft, ChevronRight, Package, Shield, Truck, Plus, Minus } from 'lucide-react';
 import { toast } from 'sonner';
 export function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
+
+    useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
     const { products } = useProducts();
     const { addToCart, cart } = useCart();
     const { user } = useAuth();
     const [isAdded, setIsAdded] = useState(false);
+    const [showQty, setShowQty] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedVariant, setSelectedVariant] = useState('');
     const [quantity, setQuantity] = useState(1);
@@ -35,12 +39,17 @@ export function ProductDetail() {
     const isInCart = cart.some(item => item.id === product.id);
     const productImages = product.images || [product.image];
     const maxStock = product.stock ?? 99;
-    const handleAddToCart = () => {
+    const handleAddClick = () => {
+        if (product.stock === 0) return;
+        setShowQty(true);
+    };
+
+    const handleConfirm = () => {
         addToCart(product, quantity);
         setIsAdded(true);
         const label = quantity > 1 ? `${quantity} unidades agregadas` : '¡Agregado al carrito!';
         toast.success(label, { description: product.name, duration: 2500 });
-        setTimeout(() => { setIsAdded(false); setQuantity(1); }, 2000);
+        setTimeout(() => { setIsAdded(false); setShowQty(false); setQuantity(1); }, 2000);
     };
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
@@ -121,51 +130,53 @@ export function ProductDetail() {
                 </p>
               </div>
 
-              {/* Quantity Selector */}
-              {product.stock !== 0 && (
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Cantidad:</h3>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                      disabled={quantity <= 1}
-                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-xl font-medium hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                      aria-label="Disminuir cantidad"
-                    >
-                      −
-                    </button>
-                    <span className="w-10 text-center text-lg font-semibold">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(q => Math.min(maxStock, q + 1))}
-                      disabled={quantity >= maxStock}
-                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-xl font-medium hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                      aria-label="Aumentar cantidad"
-                    >
-                      +
-                    </button>
-                    {product.stock !== undefined && (
-                      <span className="text-xs text-gray-400">
-                        (máx. {product.stock})
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Add to Cart Button */}
-              <button onClick={handleAddToCart} disabled={product.stock === 0} className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all text-lg mb-4 ${isAdded
-            ? 'bg-[#8fb84d] text-white'
-            : product.stock === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-[#c7e47d] hover:bg-[#b8d66e] text-[#4a5f2f]'}`}>
-                {isAdded ? (<>
-                    <Check className="w-6 h-6"/>
-                    Agregado al carrito
-                  </>) : (<>
-                    <ShoppingCart className="w-6 h-6"/>
+              {/* Add to Cart — toggles into quantity selector */}
+              {isAdded ? (
+                <button disabled className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-lg bg-[#8fb84d] text-white text-lg mb-4">
+                  <Check className="w-6 h-6"/>
+                  Agregado al carrito
+                </button>
+              ) : showQty ? (
+                <div className="flex items-center gap-3 mb-4">
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
+                    className="w-12 h-12 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Disminuir cantidad"
+                  >
+                    <Minus className="w-5 h-5"/>
+                  </button>
+                  <span className="w-10 text-center text-xl font-semibold">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(q => Math.min(maxStock, q + 1))}
+                    disabled={quantity >= maxStock}
+                    className="w-12 h-12 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Aumentar cantidad"
+                  >
+                    <Plus className="w-5 h-5"/>
+                  </button>
+                  <button
+                    onClick={handleConfirm}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#c7e47d] hover:bg-[#b8d66e] text-[#4a5f2f] text-lg transition-colors"
+                  >
+                    <ShoppingCart className="w-5 h-5"/>
                     Agregar al carrito
-                  </>)}
-              </button>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleAddClick}
+                  disabled={product.stock === 0}
+                  className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-lg transition-all text-lg mb-4 ${
+                    product.stock === 0
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-[#c7e47d] hover:bg-[#b8d66e] text-[#4a5f2f]'
+                  }`}
+                >
+                  <ShoppingCart className="w-6 h-6"/>
+                  Agregar al carrito
+                </button>
+              )}
 
               {isInCart && !isAdded && (<p className="text-sm text-[#6b8e3d] text-center mb-4">
                   Este producto ya está en tu carrito

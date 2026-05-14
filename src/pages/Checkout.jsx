@@ -63,6 +63,8 @@ export function Checkout() {
             e.email = 'Email inválido';
         if (!form.phone.trim())
             e.phone = 'Requerido';
+        else if (!/^[\d\s\+\-\(\)]{8,20}$/.test(form.phone.trim()))
+            e.phone = 'Teléfono inválido (mínimo 8 dígitos)';
         if (!form.street.trim())
             e.street = 'Requerido';
         if (!form.city.trim())

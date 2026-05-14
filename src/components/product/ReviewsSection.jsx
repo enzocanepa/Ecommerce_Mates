@@ -28,7 +28,7 @@ export function ReviewsSection({ productId }) {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [submitting, setSubmitting] = useState(false);
-    const hasReviewed = reviews.some((r) => r.userId === user?.id);
+    const hasReviewed = reviews.some((r) => r.user?.id === user?.id);
     const fetchReviews = useCallback(async () => {
         try {
             const data = await reviewService.getReviews(productId);
@@ -115,7 +115,7 @@ export function ReviewsSection({ productId }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-medium text-gray-800 text-sm">{review.userName}</span>
+                    <span className="font-medium text-gray-800 text-sm">{review.user?.name ?? 'Usuario'}</span>
                     <StarDisplay rating={review.rating}/>
                     <span className="text-xs text-gray-400">
                       {new Date(review.createdAt).toLocaleDateString('es-AR', {
