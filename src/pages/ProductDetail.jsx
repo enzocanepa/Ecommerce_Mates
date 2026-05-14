@@ -37,7 +37,9 @@ export function ProductDetail() {
       </div>);
     }
     const isInCart = cart.some(item => item.id === product.id);
-    const productImages = product.images || [product.image];
+    const productImages = (product.images?.length ? product.images : [product.image])
+        .map(img => typeof img === 'string' ? img : img.url)
+        .filter(Boolean);
     const maxStock = product.stock ?? 99;
     const handleAddClick = () => {
         if (product.stock === 0) return;
@@ -114,11 +116,16 @@ export function ProductDetail() {
               {product.variants && product.variants.length > 0 && (<div className="mb-6">
                   <h3 className="text-lg mb-3">Variantes disponibles:</h3>
                   <div className="flex flex-wrap gap-2">
-                    {product.variants.map((variant) => (<button key={variant} onClick={() => setSelectedVariant(variant)} className={`px-4 py-2 rounded-lg border transition-colors ${selectedVariant === variant
-                    ? 'bg-[#c7e47d] text-[#4a5f2f] border-[#c7e47d]'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-[#c7e47d]'}`}>
-                        {variant}
-                      </button>))}
+                    {product.variants.map((variant) => {
+                        const label = typeof variant === 'string' ? variant : variant.name;
+                        return (
+                          <button key={label} onClick={() => setSelectedVariant(label)} className={`px-4 py-2 rounded-lg border transition-colors ${selectedVariant === label
+                          ? 'bg-[#c7e47d] text-[#4a5f2f] border-[#c7e47d]'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-[#c7e47d]'}`}>
+                            {label}
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>)}
 

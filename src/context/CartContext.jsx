@@ -64,11 +64,19 @@ export function CartProvider({ children }) {
 
     // ── Acciones ──────────────────────────────────────────────────────────────
     const addToCart = (product, quantity = 1) => {
+        const item = {
+            id:       product.id,
+            name:     product.name,
+            price:    product.price,
+            image:    product.image,
+            category: product.category,
+            stock:    product.stock,
+        };
         setCart(prev => {
-            const existing = prev.find(i => i.id === product.id);
+            const existing = prev.find(i => i.id === item.id);
             if (existing)
-                return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + quantity } : i);
-            return [...prev, { ...product, quantity }];
+                return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i);
+            return [...prev, { ...item, quantity }];
         });
     };
 
