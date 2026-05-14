@@ -10,7 +10,8 @@
       "Bash(del \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\services\\\\chatService.js\")",
       "Bash(del \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\services\\\\checkoutService.js\")",
       "Read(//c/Users/enzoc/.claude/projects/c--Users-enzoc-Desktop-Ecommerce_Mates/**)",
-      "Read(//c/Users/enzoc/.claude/projects/c--Users-enzoc-Desktop-Ecommerce-Mates/**)"
+      "Read(//c/Users/enzoc/.claude/projects/c--Users-enzoc-Desktop-Ecommerce-Mates/**)",
+      "Bash(del \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\database\\\\railway.sql\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api"
