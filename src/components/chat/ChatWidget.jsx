@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, X, MessageCircle, Bot, User } from 'lucide-react';
-import { getBaseUrl } from '../../services/api';
 const WELCOME = {
     id: 'welcome',
     role: 'assistant',
@@ -45,12 +44,11 @@ const ChatWidget = () => {
     const [messages, setMessages] = useState([WELCOME]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [streamingContent, setStreamingContent] = useState('');
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, streamingContent]);
+    }, [messages]);
     useEffect(() => {
         if (isOpen) {
             setTimeout(() => inputRef.current?.focus(), 100);
@@ -65,37 +63,20 @@ const ChatWidget = () => {
         setMessages(updatedMessages);
         setInput('');
         setLoading(true);
-        setStreamingContent('');
-        const history = updatedMessages
-            .filter((m) => m.id !== 'welcome')
-            .slice(-10)
-            .map((m) => ({ role: m.role, content: m.content }));
         try {
-            const res = await fetch(`${getBaseUrl()}/ai/chat`, {
+            const res = await fetch('https://n8n.66.94.104.64.nip.io/webhook/chat-ecommerce', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: history }),
+                body: JSON.stringify({ chatInput: trimmed }),
             });
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
             }
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-            let fullContent = '';
-            if (reader) {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done)
-                        break;
-                    const chunk = decoder.decode(value, { stream: true });
-                    fullContent += chunk;
-                    setStreamingContent(fullContent);
-                }
-            }
+            const data = await res.json();
             const assistantMsg = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: fullContent || 'Lo siento, no pude procesar tu mensaje.',
+                content: data.response || 'Lo siento, no pude procesar tu mensaje.',
             };
             setMessages((prev) => [...prev, assistantMsg]);
         }
@@ -111,7 +92,6 @@ const ChatWidget = () => {
         }
         finally {
             setLoading(false);
-            setStreamingContent('');
         }
     }
     const handleSubmit = (e) => {
@@ -164,11 +144,11 @@ const ChatWidget = () => {
                 <Bot className="w-3.5 h-3.5 text-white"/>
               </div>
               <div className="max-w-[78%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-white text-gray-800 shadow-sm text-sm leading-relaxed">
-                {streamingContent || (<span className="flex items-center gap-1">
+                <span className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]"/>
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]"/>
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]"/>
-                  </span>)}
+                  </span>
               </div>
             </div>)}
 
