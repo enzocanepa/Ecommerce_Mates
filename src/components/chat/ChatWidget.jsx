@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, X, MessageCircle, Bot, User } from 'lucide-react';
-import { getBaseUrl } from '../../services/api';
 const WELCOME = {
     id: 'welcome',
     role: 'assistant',
@@ -45,12 +44,11 @@ const ChatWidget = () => {
     const [messages, setMessages] = useState([WELCOME]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [streamingContent, setStreamingContent] = useState('');
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, streamingContent]);
+    }, [messages]);
     useEffect(() => {
         if (isOpen) {
             setTimeout(() => inputRef.current?.focus(), 100);
@@ -61,58 +59,14 @@ const ChatWidget = () => {
         if (!trimmed || loading)
             return;
         const userMsg = { id: Date.now().toString(), role: 'user', content: trimmed };
-        const updatedMessages = [...messages, userMsg];
-        setMessages(updatedMessages);
+        setMessages([...messages, userMsg]);
         setInput('');
         setLoading(true);
-        setStreamingContent('');
-        const history = updatedMessages
-            .filter((m) => m.id !== 'welcome')
-            .slice(-10)
-            .map((m) => ({ role: m.role, content: m.content }));
-        try {
-            const res = await fetch(`${getBaseUrl()}/ai/chat`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: history }),
-            });
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}`);
-            }
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-            let fullContent = '';
-            if (reader) {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done)
-                        break;
-                    const chunk = decoder.decode(value, { stream: true });
-                    fullContent += chunk;
-                    setStreamingContent(fullContent);
-                }
-            }
-            const assistantMsg = {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: fullContent || 'Lo siento, no pude procesar tu mensaje.',
-            };
-            setMessages((prev) => [...prev, assistantMsg]);
-        }
-        catch (err) {
-            // Edge Function unavailable — use local FAQ fallback
-            const fallback = getFallbackResponse(trimmed);
-            const fallbackMsg = {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: fallback,
-            };
-            setMessages((prev) => [...prev, fallbackMsg]);
-        }
-        finally {
+        setTimeout(() => {
+            const reply = getFallbackResponse(trimmed);
+            setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', content: reply }]);
             setLoading(false);
-            setStreamingContent('');
-        }
+        }, 500);
     }
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -158,17 +112,16 @@ const ChatWidget = () => {
               </div>
             </div>))}
 
-          {/* Streaming / typing indicator */}
           {loading && (<div className="flex gap-2 flex-row">
               <div className="w-7 h-7 rounded-full bg-[#4a5f2f] flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Bot className="w-3.5 h-3.5 text-white"/>
               </div>
               <div className="max-w-[78%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm bg-white text-gray-800 shadow-sm text-sm leading-relaxed">
-                {streamingContent || (<span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]"/>
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]"/>
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]"/>
-                  </span>)}
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]"/>
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]"/>
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]"/>
+                </span>
               </div>
             </div>)}
 

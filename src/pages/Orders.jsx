@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router';
 import { getBaseUrl } from '../services/api';
 import { Package, ShoppingBag } from 'lucide-react';
 const BASE_URL = getBaseUrl();
-const LOCAL_ORDERS_KEY = 'mate_local_orders';
 const STATUS_LABEL = {
     completed: 'Completado',
     pending: 'Pendiente',
@@ -21,30 +20,19 @@ export function Orders() {
             return;
         }
         const fetchOrders = async () => {
-            // Try Edge Function first (real Supabase session)
-            if (accessToken) {
-                try {
-                    const res = await fetch(`${BASE_URL}/orders`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        setOrders(data.orders ?? []);
-                        setLoading(false);
-                        return;
-                    }
-                }
-                catch { /* fall through */ }
-            }
-            // Local fallback
             try {
-                const raw = localStorage.getItem(LOCAL_ORDERS_KEY);
-                setOrders(raw ? JSON.parse(raw) : []);
-            }
-            catch {
+                const res = await fetch(`${BASE_URL}/orders`, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrders(data.orders ?? []);
+                }
+            } catch {
                 setOrders([]);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
         fetchOrders();
     }, [user, accessToken, navigate]);

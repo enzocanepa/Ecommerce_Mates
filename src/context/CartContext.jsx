@@ -20,11 +20,11 @@ export function CartProvider({ children }) {
 
     // ── Initialize / re-sync cuando cambia la sesión ──────────────────────────
     useEffect(() => {
+        setInitialized(false);
         const init = async () => {
             if (user && accessToken) {
                 try {
                     const data = await cartService.getCart(accessToken);
-                    // data.cart puede ser array (nuevo) o string JSON (compatibilidad)
                     const raw = data.cart ?? [];
                     const backendCart = typeof raw === 'string' ? JSON.parse(raw) : raw;
                     const localCart   = loadLocalCart();
@@ -50,7 +50,7 @@ export function CartProvider({ children }) {
             setInitialized(true);
         };
         init();
-    }, [user, accessToken]); // corre cada vez que cambia la sesión
+    }, [user, accessToken]);
 
     // ── Persistir cambios ─────────────────────────────────────────────────────
     useEffect(() => {
@@ -60,7 +60,7 @@ export function CartProvider({ children }) {
         } else {
             localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(cart));
         }
-    }, [cart, initialized]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [cart, initialized, user, accessToken]);
 
     // ── Acciones ──────────────────────────────────────────────────────────────
     const addToCart = (product, quantity = 1) => {

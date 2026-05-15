@@ -74,8 +74,8 @@ export function About() {
           <p className="text-xl mb-6">
             Estamos para ayudarte. Contactanos y te responderemos a la brevedad.
           </p>
-          <a href="mailto:info@mateshop.com" /*CAMBIAR REFERENCIA*/ className="inline-block bg-white text-[#6b8e3d] px-8 py-3 rounded-lg hover:bg-[#e8f3d3] transition-colors text-lg">
-            infoo@mateshop.com
+          <a href="mailto:contacto@matesaconcagua.com.ar" className="inline-block bg-white text-[#6b8e3d] px-8 py-3 rounded-lg hover:bg-[#e8f3d3] transition-colors text-lg">
+            contacto@matesaconcagua.com.ar
           </a>
         </div>
       </section>

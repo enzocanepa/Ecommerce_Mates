@@ -2,3 +2,13 @@
 @source '../**/*.{js,ts,jsx,tsx}';
 
 @import 'tw-animate-css';
+
+@theme {
+  --color-brand-50:  #e8f3d3;
+  --color-brand-100: #c7e47d;
+  --color-brand-200: #a8c95f;
+  --color-brand-300: #8fb84d;
+  --color-brand-400: #6b8e3d;
+  --color-brand-500: #4a5f2f;
+  --color-brand-600: #3a4f22;
+}

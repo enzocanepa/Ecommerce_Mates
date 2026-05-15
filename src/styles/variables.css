@@ -5,13 +5,13 @@
 
 :root {
   /* ── COLORES DE MARCA ─────────────────────────────────── */
-  --color-primary-50:  #EFF5E8;
-  --color-primary-100: #D4E8C0;
-  --color-primary-200: #A8CF81;
-  --color-primary-300: #7AAD55;
-  --color-primary-400: #5C8A3C;   /* principal */
-  --color-primary-500: #3D6027;   /* hover / activo */
-  --color-primary-600: #2A4419;   /* dark / pressed */
+  --color-primary-50:  #e8f3d3;   /* bg muy claro */
+  --color-primary-100: #c7e47d;   /* bg claro, botones suaves */
+  --color-primary-200: #a8c95f;   /* principal */
+  --color-primary-300: #8fb84d;   /* gradientes */
+  --color-primary-400: #6b8e3d;   /* texto sobre fondo claro */
+  --color-primary-500: #4a5f2f;   /* texto, headers, botones oscuros */
+  --color-primary-600: #3a4f22;   /* hover sobre botones oscuros */
 
   /* ── ACENTO CÁLIDO (yerba / madera) ───────────────────── */
   --color-accent-100:  #F5EDD8;
