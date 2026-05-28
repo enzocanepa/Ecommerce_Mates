@@ -74,9 +74,19 @@ export function CartProvider({ children }) {
         };
         setCart(prev => {
             const existing = prev.find(i => i.id === item.id);
-            if (existing)
-                return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i);
-            return [...prev, { ...item, quantity }];
+            const newCart = existing 
+                ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i)
+                : [...prev, { ...item, quantity }];
+                
+            // N8N Webhook: Carrito Abandonado
+            if (user) {
+                const total = newCart.reduce((s, i) => s + i.price * i.quantity, 0);
+                import('../services/n8nService').then(({ n8nService }) => {
+                    n8nService.enviarCarritoAbandonado(user, newCart, total);
+                }).catch(err => console.error(err));
+            }
+            
+            return newCart;
         });
     };
 
@@ -92,9 +102,23 @@ export function CartProvider({ children }) {
     const checkout = async () => {
         if (!user)        throw new Error('Debes iniciar sesión para realizar una compra');
         if (!accessToken) throw new Error('No hay token de autenticación');
-        const { orderService } = await import('../services/orderService');
-        await orderService.createOrder(cart, totalPrice, accessToken);
-        clearCart();
+        try {
+            const { orderService } = await import('../services/orderService');
+            const res = await orderService.createOrder(cart, totalPrice, accessToken);
+            
+            // N8N Webhook: Compra Exitosa
+            import('../services/n8nService').then(({ n8nService }) => {
+                n8nService.enviarCompraExitosa(user, cart, totalPrice, res?.id || '');
+            }).catch(err => console.error(err));
+            
+            clearCart();
+        } catch (error) {
+            // N8N Webhook: Compra Fallida
+            import('../services/n8nService').then(({ n8nService }) => {
+                n8nService.enviarCompraFallida(user, error.message);
+            }).catch(err => console.error(err));
+            throw error;
+        }
     };
 
     const totalItems = cart.reduce((s, i) => s + i.quantity, 0);

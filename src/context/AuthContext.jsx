@@ -42,6 +42,12 @@ export function AuthProvider({ children }) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Error al registrarse');
     saveSession(data.token, data.user);
+    
+    // N8N Webhook: Correo de Bienvenida
+    import('../services/n8nService').then(({ n8nService }) => {
+      n8nService.enviarBienvenida(data.user);
+    }).catch(err => console.error(err));
+
     return { needsConfirmation: false };
   };
 
