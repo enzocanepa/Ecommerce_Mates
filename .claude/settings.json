@@ -14,10 +14,15 @@
       "Bash(del \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\database\\\\railway.sql\")",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\\" -Recurse -Force | Select-Object FullName | head -50)",
       "Bash(Get-ChildItem -Recurse -Filter \"*.java\" \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\api\\\\api\\\\src\")",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(dir \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\api\\\\api\\\\src\\\\main\\\\java\\\\com\\\\matesaconcahua\\\\api\" /s /b)",
+      "PowerShell(head -20)",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\api\\\\api\" -Recurse | Where-Object {$_.Extension -eq \".java\"} | Select-Object -First 5 -ExpandProperty FullName)",
+      "Read(//c/Users/enzoc/Desktop/**)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\enzoc\\Desktop\\api\\api"
+      "c:\\Users\\enzoc\\Desktop\\api\\api",
+      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\exception"
     ]
   }
 }
