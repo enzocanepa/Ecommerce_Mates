@@ -19,7 +19,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react':    ['react', 'react-dom', 'react-router'],
-          'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-utils':    ['sonner', 'clsx', 'tailwind-merge', 'lucide-react'],
         },
       },
