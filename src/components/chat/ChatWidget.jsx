@@ -56,31 +56,60 @@ const ChatWidget = () => {
     }, [isOpen]);
     async function sendMessage(text) {
         const trimmed = text.trim();
-        if (!trimmed || loading)
-            return;
+        if (!trimmed || loading) return;
+        
         const userMsg = { id: Date.now().toString(), role: 'user', content: trimmed };
         setMessages([...messages, userMsg]);
         setInput('');
         setLoading(true);
-        setTimeout(() => {
-            const reply = getFallbackResponse(trimmed);
-            setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', content: reply }]);
+        
+        try {
+            const sessionId = localStorage.getItem('chat_session') || `sess_${Date.now()}`;
+            localStorage.setItem('chat_session', sessionId);
+
+            const res = await fetch('https://n8n.66.94.104.64.nip.io/webhook/chat-ecommerce', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    message: trimmed,
+                    sessionId: sessionId
+                })
+            });
+            
+            let botReply = '';
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await res.json();
+                botReply = data.output || data.response || data.message || data.text || JSON.stringify(data);
+            } else {
+                botReply = await res.text();
+            }
+
+            setMessages((prev) => [...prev, { id: Date.now().toString(), role: 'assistant', content: botReply }]);
+        } catch (error) {
+            console.error("Error conectando con n8n:", error);
+            setMessages((prev) => [...prev, { id: Date.now().toString(), role: 'assistant', content: 'Lo siento, tengo problemas de conexión en este momento. Por favor, intenta de nuevo más tarde.' }]);
+        } finally {
             setLoading(false);
-        }, 500);
+        }
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         sendMessage(input);
     };
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage(input);
         }
     };
-    return (<div className="fixed bottom-6 right-6 z-[9999] font-sans">
-      {/* Chat window */}
-      <div className={`absolute bottom-20 right-0 w-80 sm:w-96 flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out origin-bottom-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`} style={{ height: '520px' }}>
+
+    return (
+      <div className="fixed bottom-6 right-6 z-[9999] font-sans">
+        {/* Chat window */}
+        <div className={`absolute bottom-20 right-0 w-80 sm:w-96 flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out origin-bottom-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`} style={{ height: '520px', maxHeight: 'calc(100vh - 100px)' }}>
         {/* Header */}
         <div className="bg-[#4a5f2f] text-white px-4 py-3 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2.5">
