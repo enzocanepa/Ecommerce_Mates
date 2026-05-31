@@ -25,7 +25,9 @@
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",
       "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\exception",
-      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\config"
+      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\config",
+      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\controller",
+      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\resources"
     ]
   }
 }

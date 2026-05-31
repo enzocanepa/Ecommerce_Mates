@@ -103,7 +103,7 @@ export function CheckoutResult() {
             // Try Edge Function (real Supabase auth)
             if (accessToken) {
                 try {
-                    const res = await fetch(`${BASE_URL}/orders`, {
+                    const res = await fetch(`${BASE_URL}/api/orders`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -118,7 +118,6 @@ export function CheckoutResult() {
                         }),
                     });
                     if (res.ok) {
-                        decrementStock(itemsToSave);
                         cleanup();
                         return;
                     }

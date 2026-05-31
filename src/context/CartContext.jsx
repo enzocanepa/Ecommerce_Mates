@@ -1,8 +1,9 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { cartService } from '../services/cartService';
 
 const LOCAL_CART_KEY = 'mateShopCart';
+const ABANDONED_CART_DELAY = 15 * 60 * 1000; // 15 minutos
 const CartContext = createContext(undefined);
 
 function loadLocalCart() {
@@ -17,6 +18,7 @@ export function CartProvider({ children }) {
     const { user, accessToken } = useAuth();
     const [cart, setCart]               = useState([]);
     const [initialized, setInitialized] = useState(false);
+    const abandonedCartTimer = useRef(null);
 
     // ── Initialize / re-sync cuando cambia la sesión ──────────────────────────
     useEffect(() => {
@@ -78,12 +80,15 @@ export function CartProvider({ children }) {
                 ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i)
                 : [...prev, { ...item, quantity }];
                 
-            // N8N Webhook: Carrito Abandonado
+            // B-03: debounce del webhook de carrito abandonado (15 min de inactividad)
             if (user) {
-                const total = newCart.reduce((s, i) => s + i.price * i.quantity, 0);
-                import('../services/n8nService').then(({ n8nService }) => {
-                    n8nService.enviarCarritoAbandonado(user, newCart, total);
-                }).catch(err => console.error(err));
+                clearTimeout(abandonedCartTimer.current);
+                abandonedCartTimer.current = setTimeout(() => {
+                    const total = newCart.reduce((s, i) => s + i.price * i.quantity, 0);
+                    import('../services/n8nService').then(({ n8nService }) => {
+                        n8nService.enviarCarritoAbandonado(user, newCart, total);
+                    }).catch(err => console.error(err));
+                }, ABANDONED_CART_DELAY);
             }
             
             return newCart;
@@ -104,7 +109,9 @@ export function CartProvider({ children }) {
         if (!accessToken) throw new Error('No hay token de autenticación');
         try {
             const { orderService } = await import('../services/orderService');
-            const res = await orderService.createOrder(cart, totalPrice, accessToken);
+            // A-04: calcular total localmente para evitar usar el valor del render anterior
+            const currentTotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const res = await orderService.createOrder(cart, currentTotal, accessToken);
             
             // N8N Webhook: Compra Exitosa
             import('../services/n8nService').then(({ n8nService }) => {

@@ -1,10 +1,9 @@
-// Servicio para centralizar los envíos de webhooks hacia n8n
-
+// M-06: URLs cargadas desde variables de entorno, no hardcodeadas en el código
 const N8N_URLS = {
-    bienvenida: 'https://n8n.66.94.104.64.nip.io/webhook/bienvenida',
-    carritoAbandonado: 'https://n8n.66.94.104.64.nip.io/webhook/carrito-abandonado',
-    compraExitosa: 'https://n8n.66.94.104.64.nip.io/webhook/compra-exitosa',
-    compraFallida: 'https://n8n.66.94.104.64.nip.io/webhook/compra-fallida'
+    bienvenida:        import.meta.env.VITE_N8N_BIENVENIDA_URL,
+    carritoAbandonado: import.meta.env.VITE_N8N_CARRITO_URL,
+    compraExitosa:     import.meta.env.VITE_N8N_COMPRA_EXITOSA_URL,
+    compraFallida:     import.meta.env.VITE_N8N_COMPRA_FALLIDA_URL,
 };
 
 const enviarWebhook = async (evento, payload) => {
@@ -12,13 +11,12 @@ const enviarWebhook = async (evento, payload) => {
         const url = N8N_URLS[evento];
         if (!url) return;
 
-        // Petición asíncrona fire-and-forget para no bloquear el flujo de React
         fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).catch(err => console.error(`Error enviando webhook ${evento}:`, err));
-        
+
     } catch (error) {
         console.error(`Error al preparar el webhook ${evento}:`, error);
     }

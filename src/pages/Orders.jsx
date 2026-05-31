@@ -21,7 +21,7 @@ export function Orders() {
         }
         const fetchOrders = async () => {
             try {
-                const res = await fetch(`${BASE_URL}/orders`, {
+                const res = await fetch(`${BASE_URL}/api/orders`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 if (res.ok) {
@@ -87,9 +87,9 @@ export function Orders() {
 
               <div className="border-t border-gray-100 pt-4 space-y-2">
                 {order.items.map((item, i) => (<div key={i} className="flex justify-between text-sm">
-                    <span className="text-gray-700">{item.name} <span className="text-gray-400">×{item.quantity}</span></span>
+                    <span className="text-gray-700">{item.product?.name ?? 'Producto'} <span className="text-gray-400">×{item.quantity}</span></span>
                     <span className="font-medium text-gray-800">
-                      ${(item.price * item.quantity).toLocaleString('es-AR')}
+                      ${((item.unitPrice ?? item.price ?? 0) * item.quantity).toLocaleString('es-AR')}
                     </span>
                   </div>))}
               </div>
