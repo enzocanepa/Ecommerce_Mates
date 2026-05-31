@@ -109,9 +109,11 @@ export function Checkout() {
                     baseUrl: window.location.origin,
                 }),
             });
-            const data = await res.json();
+            const text = await res.text();
+            let data = {};
+            try { data = text ? JSON.parse(text) : {}; } catch { data = {}; }
             if (!res.ok)
-                throw new Error(data.error || 'Error al crear la preferencia de pago');
+                throw new Error(data.error || `Error ${res.status}: no se pudo crear la preferencia de pago`);
             window.location.href = data.init_point;
         }
         catch (err) {
