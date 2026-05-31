@@ -7,9 +7,12 @@ const SESSION_KEY = 'mate_session'; // B-06: clave unificada
 const AuthContext = createContext(undefined);
 
 // M-05: verificar si el JWT expiró sin librerías externas
+// JWT usa base64url (RFC 4648) — hay que normalizar antes de atob()
 function isTokenExpired(token) {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - b64.length % 4) % 4);
+    const payload = JSON.parse(atob(padded));
     return payload.exp * 1000 < Date.now();
   } catch {
     return true;

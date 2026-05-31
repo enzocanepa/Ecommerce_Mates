@@ -50,9 +50,10 @@ export function AdminProducts() {
     const [modalOpen,   setModalOpen]   = useState(false);
     const [editingId,   setEditingId]   = useState(null);
     const [form,        setForm]        = useState(EMPTY_FORM);
-    const [saving,      setSaving]      = useState(false);
+    const [saving,       setSaving]      = useState(false);
     const [deleteTarget, setDeleteTarget] = useState(null);
-    const [error,       setError]       = useState('');
+    const [deleteError,  setDeleteError]  = useState('');
+    const [error,        setError]        = useState('');
 
     const filtered = products.filter(p =>
         p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -108,7 +109,8 @@ export function AdminProducts() {
             await refreshProducts();
             closeModal();
         } catch (err) {
-            setError(err.message || 'Error al guardar.');
+            console.error('Error al guardar producto:', err);
+            setError(err.message || 'Error al guardar. Verificá que tu sesión sea válida.');
         } finally {
             setSaving(false);
         }
@@ -116,15 +118,17 @@ export function AdminProducts() {
 
     async function handleDelete(id) {
         setSaving(true);
+        setDeleteError('');
         try {
             await apiRequest(`/api/products/${id}`, { method: 'DELETE' }, accessToken);
             await refreshProducts();
             toast.success('Producto eliminado.');
+            setDeleteTarget(null);
         } catch (err) {
-            toast.error(err.message || 'Error al eliminar.');
+            console.error('Error al eliminar producto:', err);
+            setDeleteError(err.message || 'Error al eliminar. Verificá que tu sesión sea válida.');
         } finally {
             setSaving(false);
-            setDeleteTarget(null);
         }
     }
 
@@ -218,9 +222,14 @@ export function AdminProducts() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">¿Eliminar producto?</h3>
-                        <p className="text-gray-500 text-sm mb-6">Esta acción no se puede deshacer.</p>
+                        <p className="text-gray-500 text-sm mb-4">Esta acción no se puede deshacer.</p>
+                        {deleteError && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm mb-4">
+                                {deleteError}
+                            </div>
+                        )}
                         <div className="flex gap-3 justify-end">
-                            <button onClick={() => setDeleteTarget(null)}
+                            <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }}
                                 className="px-4 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                 Cancelar
                             </button>

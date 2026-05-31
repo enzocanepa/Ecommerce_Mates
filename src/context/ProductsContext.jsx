@@ -13,12 +13,11 @@ export function ProductsProvider({ children }) {
         setLoading(true);
         try {
             const data = await productService.getProducts();
-            // Si la API devuelve productos, reemplaza los estáticos
-            if (Array.isArray(data.products) && data.products.length > 0)
+            // Siempre usar el estado real de la DB cuando la API responde
+            if (Array.isArray(data.products))
                 setProducts(data.products);
-            // Si la DB está vacía, mantiene los estáticos como fallback
         } catch {
-            // Backend no disponible — mantiene los estáticos
+            // Backend no disponible — mantiene el estado actual (estáticos o última carga)
         } finally {
             setLoading(false);
         }
