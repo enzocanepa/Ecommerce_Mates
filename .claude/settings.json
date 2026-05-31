@@ -20,7 +20,10 @@
       "PowerShell(Get-ChildItem \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\api\\\\api\" -Recurse | Where-Object {$_.Extension -eq \".java\"} | Select-Object -First 5 -ExpandProperty FullName)",
       "Read(//c/Users/enzoc/Desktop/**)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\" -Recurse -File)",
-      "Bash(Select-Object -ExpandProperty FullName)"
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",
