@@ -57,21 +57,15 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'checkout/exito',
-                element: (<ProtectedRoute>
-            <LazyPage><CheckoutResult /></LazyPage>
-          </ProtectedRoute>),
+                element: <LazyPage><CheckoutResult /></LazyPage>,
             },
             {
                 path: 'checkout/error',
-                element: (<ProtectedRoute>
-            <LazyPage><CheckoutResult /></LazyPage>
-          </ProtectedRoute>),
+                element: <LazyPage><CheckoutResult /></LazyPage>,
             },
             {
                 path: 'checkout/pendiente',
-                element: (<ProtectedRoute>
-            <LazyPage><CheckoutResult /></LazyPage>
-          </ProtectedRoute>),
+                element: <LazyPage><CheckoutResult /></LazyPage>,
             },
             { path: '*', Component: NotFound },
         ],
