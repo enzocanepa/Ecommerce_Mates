@@ -50,7 +50,7 @@ export function ProductCard({ product, isFeatured = false }) {
         >
             <Link to={`/producto/${product.id}`} className="flex flex-col flex-1">
                 {/* Image */}
-                <div className="relative overflow-hidden" style={{ aspectRatio: '4/3', background: '#eceadf' }}>
+                <div className="relative overflow-hidden" style={{ aspectRatio: '1/1', background: '#eceadf' }}>
                     <img
                         src={product.image}
                         alt={product.name}

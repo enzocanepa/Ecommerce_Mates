@@ -144,8 +144,8 @@ export function Shop() {
         <div style={{ background: '#f6f4ec', minHeight: '100vh' }}>
 
             {/* ── Page header ──────────────────────────────────── */}
-            <div style={{ background: '#fff', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
-                <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-10 md:py-14">
+            <div style={{ borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-10 md:py-14 text-center">
                     <p
                         className="text-[12px] font-bold tracking-[2.5px] uppercase mb-3"
                         style={{ color: '#c06a34' }}
@@ -205,7 +205,7 @@ export function Shop() {
                                         style={{
                                             height: '40px',
                                             padding: '0 18px',
-                                            borderRadius: '10px',
+                                            borderRadius: '20px',
                                             border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
                                             background: isActive ? '#eef0e3' : '#fff',
                                             color: isActive ? '#465824' : '#3f443a',
@@ -240,7 +240,7 @@ export function Shop() {
                             style={{
                                 height: '40px',
                                 padding: '0 14px',
-                                borderRadius: '10px',
+                                borderRadius: '20px',
                                 border: '1.5px solid rgba(34,38,29,.18)',
                                 background: '#fff',
                                 color: '#3f443a',
@@ -259,7 +259,7 @@ export function Shop() {
                             style={{
                                 height: '40px',
                                 padding: '0 16px',
-                                borderRadius: '10px',
+                                borderRadius: '20px',
                                 border: `1.5px solid ${showFilters || minPrice || maxPrice ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
                                 background: showFilters || minPrice || maxPrice ? '#eef0e3' : '#fff',
                                 color: showFilters || minPrice || maxPrice ? '#465824' : '#3f443a',
@@ -318,7 +318,7 @@ export function Shop() {
                                     width: '160px',
                                     height: '40px',
                                     padding: '0 14px',
-                                    borderRadius: '10px',
+                                    borderRadius: '20px',
                                     border: '1.5px solid rgba(34,38,29,.18)',
                                     background: '#f6f4ec',
                                     color: '#22261d',
@@ -343,7 +343,7 @@ export function Shop() {
                                     width: '160px',
                                     height: '40px',
                                     padding: '0 14px',
-                                    borderRadius: '10px',
+                                    borderRadius: '20px',
                                     border: '1.5px solid rgba(34,38,29,.18)',
                                     background: '#f6f4ec',
                                     color: '#22261d',
