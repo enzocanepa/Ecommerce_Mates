@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Mail } from 'lucide-react';
 export function Footer() {
-    return (<footer className="bg-[#4a5f2f] text-white mt-16">
+    return (<footer className="bg-[#1a2a0a] text-white">
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 
@@ -13,7 +13,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3 text-[#c7e47d]">Navegación</h3>
+            <h3 className="font-semibold mb-3 text-white uppercase text-xs tracking-widest">Navegación</h3>
             <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/" className="hover:text-white transition-colors">Inicio</Link></li>
               <li><Link to="/tienda" className="hover:text-white transition-colors">Catálogo</Link></li>
@@ -23,7 +23,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3 text-[#c7e47d]">Contacto</h3>
+            <h3 className="font-semibold mb-3 text-white uppercase text-xs tracking-widest">Contacto</h3>
             <ul className="space-y-2 text-sm text-white/70">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 flex-shrink-0"/>
