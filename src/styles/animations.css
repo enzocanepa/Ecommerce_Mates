@@ -136,6 +136,16 @@
   box-shadow: 0 10px 30px rgba(34,38,29,.12);
 }
 
+/* ── Auth inputs ──────────────────────────────────────── */
+.auth-input {
+  transition: border-color .2s, box-shadow .2s;
+}
+.auth-input:focus {
+  border-color: #566a2f !important;
+  box-shadow: 0 0 0 4px rgba(86,106,47,.12);
+  outline: none;
+}
+
 /* ── Reducir movimiento (accesibilidad) ────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
