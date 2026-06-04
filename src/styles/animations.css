@@ -112,7 +112,7 @@
 
 /* ── Product card hover (CSS puro = igual que el diseño HTML) ── */
 .product-card {
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .45s ease, box-shadow .45s ease;
   box-shadow: 0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05);
 }
 .product-card:hover {
@@ -120,10 +120,20 @@
   box-shadow: 0 10px 30px rgba(34,38,29,.12);
 }
 .product-card-img {
-  transition: transform .5s ease;
+  transition: transform .7s ease;
 }
 .product-card:hover .product-card-img {
   transform: scale(1.05);
+}
+
+/* ── Valor card hover ─────────────────────────────────── */
+.valor-card {
+  transition: transform .35s ease, box-shadow .35s ease;
+  box-shadow: 0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05);
+}
+.valor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(34,38,29,.12);
 }
 
 /* ── Reducir movimiento (accesibilidad) ────────────────── */
