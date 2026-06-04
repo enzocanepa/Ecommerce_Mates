@@ -1,46 +1,86 @@
 import { Link } from 'react-router';
-import { Mail } from 'lucide-react';
+
 export function Footer() {
-    return (<footer className="bg-[#1a2a0a] text-white">
-      <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    return (
+        <footer style={{ background: '#465824', color: '#e7e6d6' }}>
+            <div className="max-w-[1200px] mx-auto px-6 md:px-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-11 pt-12 md:pt-16 pb-8 md:pb-10">
 
-          <div>
-            <img src="/logo.webp" alt="Mates Aconcagua" className="h-12 w-auto mb-3"/>
-            <p className="text-sm text-white/70 leading-relaxed">
-              La tradición del mate en tus manos. Productos artesanales con envío gratis a todo el país.
-            </p>
-          </div>
+                {/* Brand */}
+                <div>
+                    <Link to="/" className="inline-flex items-center gap-3 mb-[18px]">
+                        <span
+                            className="w-[42px] h-[42px] rounded-full bg-[#566a2f] text-[#f3efe0] grid place-items-center text-[20px] flex-shrink-0"
+                            style={{ fontFamily: "'DM Serif Display', Georgia, serif", boxShadow: 'inset 0 0 0 3px rgba(243,239,224,.25)' }}
+                        >
+                            M
+                        </span>
+                        <span>
+                        <span style={{ color: '#f3efe0', fontFamily: "'DM Serif Display', Georgia, serif", fontSize: '21px', lineHeight: 1, letterSpacing: '.2px', display: 'block' }}>
+                            Mates Aconcagua
+                        </span>
+                        <small style={{ fontFamily: "'Karla', sans-serif", fontSize: '10.5px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#b8bda3', marginTop: '3px', fontWeight: 600, display: 'block' }}>
+                            Tradición artesanal
+                        </small>
+                    </span>
+                    </Link>
+                    <p style={{ fontSize: '14.5px', lineHeight: 1.6, color: 'rgba(231,230,214,.78)', maxWidth: '300px' }}>
+                        La tradición del mate en tus manos. Productos artesanales con envío gratis a todo el país.
+                    </p>
+                </div>
 
-          <div>
-            <h3 className="font-semibold mb-3 text-white uppercase text-xs tracking-widest">Navegación</h3>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/" className="hover:text-white transition-colors">Inicio</Link></li>
-              <li><Link to="/tienda" className="hover:text-white transition-colors">Catálogo</Link></li>
-              <li><Link to="/acerca" className="hover:text-white transition-colors">Acerca de</Link></li>
-              <li><Link to="/pedidos" className="hover:text-white transition-colors">Mis Pedidos</Link></li>
-            </ul>
-          </div>
+                {/* Nav */}
+                <div>
+                    <h5 style={{ fontFamily: "'Karla', sans-serif", fontSize: '13px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#cdd0b8', marginBottom: '18px' }}>
+                        Navegación
+                    </h5>
+                    <ul className="flex flex-col gap-2.5">
+                        {[['/', 'Inicio'], ['/tienda', 'Catálogo'], ['/acerca', 'Acerca de'], ['/pedidos', 'Mis pedidos']].map(([to, label]) => (
+                            <li key={to}>
+                                <Link to={to} style={{ fontSize: '14.5px', color: 'rgba(231,230,214,.82)', transition: 'color .2s' }}
+                                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(231,230,214,.82)'}
+                                >
+                                    {label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
 
-          <div>
-            <h3 className="font-semibold mb-3 text-white uppercase text-xs tracking-widest">Contacto</h3>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 flex-shrink-0"/>
-                <a href="mailto:contacto@matesaconcagua.com.ar" className="hover:text-white transition-colors">
-                  contacto@matesaconcagua.com.ar
-                </a>
-              </li>
-              <li>Envíos: 24-48hs CABA/GBA · 3-7 días interior</li>
-              <li>Devoluciones hasta 30 días</li>
-            </ul>
-          </div>
+                {/* Contact */}
+                <div>
+                    <h5 style={{ fontFamily: "'Karla', sans-serif", fontSize: '13px', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#cdd0b8', marginBottom: '18px' }}>
+                        Contacto
+                    </h5>
+                    <ul className="flex flex-col">
+                        <li className="flex gap-2.5 mb-3" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+                            <a href="mailto:contacto@matesaconcagua.com.ar"
+                                style={{ color: 'rgba(231,230,214,.82)', transition: 'color .2s' }}
+                                onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                                onMouseLeave={e => e.currentTarget.style.color = 'rgba(231,230,214,.82)'}
+                            >
+                                contacto@matesaconcagua.com.ar
+                            </a>
+                        </li>
+                        <li className="flex gap-2.5 mb-3" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg>
+                            Envíos 24–48hs CABA/GBA · 3–7 días interior
+                        </li>
+                        <li className="flex gap-2.5" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                            Devoluciones hasta 30 días
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-        </div>
-
-        <div className="border-t border-white/20 pt-6 text-center text-xs text-white/50">
-          © 2026 Mates Aconcagua. Todos los derechos reservados.
-        </div>
-      </div>
-    </footer>);
+            <div
+                className="text-center py-[22px] text-[13px]"
+                style={{ borderTop: '1px solid rgba(231,230,214,.16)', color: 'rgba(231,230,214,.6)' }}
+            >
+                © 2026 Mates Aconcagua. Todos los derechos reservados.
+            </div>
+        </footer>
+    );
 }

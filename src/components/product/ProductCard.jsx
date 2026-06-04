@@ -1,5 +1,5 @@
 import { useCart } from '../../context/CartContext';
-import { ShoppingCart, Check, Plus, Minus } from 'lucide-react';
+import { Check, Plus, Minus } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
@@ -44,39 +44,70 @@ export function ProductCard({ product, isFeatured = false }) {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100">
-            <Link to={`/producto/${product.id}`} className="block">
-                <div className="relative aspect-square overflow-hidden">
+        <article
+            className="group bg-white rounded-2xl overflow-hidden flex flex-col"
+            style={{
+                border: '1px solid rgba(34,38,29,.10)',
+                boxShadow: '0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05)',
+                transition: 'transform .25s ease, box-shadow .25s ease',
+            }}
+            onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-6px)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(34,38,29,.12)';
+            }}
+            onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05)';
+            }}
+        >
+            <Link to={`/producto/${product.id}`} className="flex flex-col flex-1">
+                {/* Image */}
+                <div className="relative overflow-hidden" style={{ aspectRatio: '4/3', background: '#eceadf' }}>
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
                     />
                     {isFeatured && (
-                        <span className="absolute top-3 left-3 bg-[#c07040] text-white text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide">
+                        <span
+                            className="absolute top-3.5 left-3.5 text-white text-[11.5px] font-bold tracking-[0.4px] uppercase px-3 py-1.5 rounded-full"
+                            style={{
+                                background: '#c06a34',
+                                boxShadow: '0 4px 12px rgba(192,106,52,.3)',
+                            }}
+                        >
                             Más vendido
                         </span>
                     )}
                 </div>
-                <div className="p-4">
+
+                {/* Body */}
+                <div className="flex flex-col flex-1 p-[22px]">
                     {product.category && (
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+                        <p className="text-[11.5px] font-bold tracking-[1.5px] uppercase text-[#566a2f] mb-1.5">
                             {product.category}
                         </p>
                     )}
-                    <h3 className="font-semibold text-gray-900 text-base mb-3 hover:text-[#c07040] transition-colors leading-snug">
+                    <p className="text-[19px] font-bold leading-[1.25] text-[#22261d] mb-auto">
                         {product.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
+                    </p>
+
+                    {/* Meta */}
+                    <div className="flex items-center justify-between gap-3 mt-[18px]">
                         <div>
-                            <span className="text-xl font-bold text-gray-900">
+                            <span
+                                className="text-[27px] leading-none text-[#22261d]"
+                                style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+                            >
                                 ${product.price.toLocaleString('es-AR')}
                             </span>
-                            <p className="text-xs text-[#4a5f2f] mt-0.5">Envío gratis</p>
+                            <small className="block text-[11.5px] font-semibold text-[#6c7062] tracking-[.3px] mt-1">
+                                Envío gratis
+                            </small>
                         </div>
 
                         {isAdded ? (
-                            <span className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#8fb84d] text-white text-sm">
+                            <span className="inline-flex items-center gap-1.5 px-4 h-[42px] rounded-full bg-[#566a2f] text-[#f5f2e6] text-sm font-bold">
                                 <Check className="w-4 h-4" />
                                 Agregado
                             </span>
@@ -87,41 +118,51 @@ export function ProductCard({ product, isFeatured = false }) {
                             >
                                 <button
                                     onClick={handleDecrease}
-                                    className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                    style={{ borderColor: 'rgba(34,38,29,.18)' }}
                                     aria-label="Disminuir"
                                 >
                                     <Minus className="w-3 h-3" />
                                 </button>
-                                <span className="w-7 text-center font-semibold text-sm">{quantity}</span>
+                                <span className="w-7 text-center font-bold text-sm">{quantity}</span>
                                 <button
                                     onClick={handleIncrease}
                                     disabled={quantity >= maxStock}
-                                    className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    style={{ borderColor: 'rgba(34,38,29,.18)' }}
                                     aria-label="Aumentar"
                                 >
                                     <Plus className="w-3 h-3" />
                                 </button>
                                 <button
                                     onClick={handleConfirm}
-                                    className="w-8 h-8 rounded-lg bg-[#c7e47d] hover:bg-[#b8d66e] flex items-center justify-center transition-colors"
+                                    className="w-8 h-8 rounded-full bg-[#566a2f] hover:bg-[#465824] flex items-center justify-center transition-colors"
                                     aria-label="Confirmar"
                                 >
-                                    <Check className="w-4 h-4 text-[#4a5f2f]" />
+                                    <Check className="w-4 h-4 text-[#f5f2e6]" />
                                 </button>
                             </div>
                         ) : (
                             <button
                                 onClick={handleAddClick}
                                 disabled={product.stock === 0}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#4a5f2f] hover:bg-[#3a4f20] text-white transition-all disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-sm"
+                                className="inline-flex items-center gap-2 font-bold text-sm rounded-full transition-all duration-200 active:translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
+                                style={{
+                                    background: product.stock === 0 ? undefined : '#566a2f',
+                                    color: '#f5f2e6',
+                                    height: '42px',
+                                    padding: '0 18px',
+                                }}
+                                onMouseEnter={e => { if (product.stock > 0) e.currentTarget.style.background = '#465824'; }}
+                                onMouseLeave={e => { if (product.stock > 0) e.currentTarget.style.background = '#566a2f'; }}
                             >
-                                <ShoppingCart className="w-4 h-4" />
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
                                 Agregar
                             </button>
                         )}
                     </div>
                 </div>
             </Link>
-        </div>
+        </article>
     );
 }

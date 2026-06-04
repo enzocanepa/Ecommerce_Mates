@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import { ArrowRight } from 'lucide-react';
 import { ProductCard } from '../product/ProductCard';
 import { useProducts } from '../../context/ProductsContext';
 
@@ -8,31 +7,50 @@ export function FeaturedProducts() {
     const featured = products.slice(0, 3);
 
     return (
-        <section className="py-16 md:py-20 bg-[#f5f2ee]">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <span className="inline-block text-[#c07040] text-xs font-semibold tracking-[0.25em] uppercase mb-3">
-                        — Lo más elegido
+        <section className="py-16 md:py-[88px]" style={{ background: '#f6f4ec' }}>
+            <div className="max-w-[1200px] mx-auto px-6 md:px-7">
+
+                {/* Section header */}
+                <div className="text-center max-w-[620px] mx-auto mb-10 md:mb-[52px]">
+                    <span className="inline-flex items-center gap-2.5 text-[#c06a34] text-[11px] md:text-[12.5px] font-bold tracking-[2.5px] uppercase mb-3 md:mb-[14px]">
+                        <span className="inline-block w-5 md:w-6 h-px bg-[#c06a34]" />
+                        Lo más elegido
                     </span>
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                    <h2
+                        className="text-[30px] md:text-[38px] lg:text-[44px] leading-[1.1] tracking-[-0.3px] mb-3 text-[#22261d]"
+                        style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+                    >
                         Productos destacados
                     </h2>
-                    <p className="text-gray-500 text-sm max-w-sm mx-auto leading-relaxed">
+                    <p className="text-[14.5px] md:text-[16.5px] text-[#6c7062]">
                         Una selección de nuestras piezas más queridas, listas para acompañarte mate tras mate.
                     </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+
+                {/* Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-[26px]">
                     {featured.map((product, index) => (
                         <ProductCard key={product.id} product={product} isFeatured={index === 0} />
                     ))}
                 </div>
-                <div className="text-center">
+
+                {/* CTA */}
+                <div className="text-center mt-10 md:mt-12">
                     <Link
                         to="/tienda"
-                        className="inline-flex items-center gap-2 border border-gray-400 text-gray-700 px-7 py-3 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                        className="inline-flex items-center gap-2 font-bold text-sm md:text-[15.5px] rounded-full transition-all duration-200 active:translate-y-px"
+                        style={{
+                            background: '#fff',
+                            border: '1px solid rgba(34,38,29,.18)',
+                            color: '#22261d',
+                            height: '46px',
+                            padding: '0 22px',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
                     >
                         Ver todos los productos
-                        <ArrowRight className="w-4 h-4" />
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                     </Link>
                 </div>
             </div>
