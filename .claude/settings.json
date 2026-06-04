@@ -23,7 +23,9 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\" -Recurse -Name)",
+      "Bash(Select-Object -First 50)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",
