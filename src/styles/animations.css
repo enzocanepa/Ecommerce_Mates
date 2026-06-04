@@ -110,6 +110,22 @@
 .stagger-grid > *:nth-child(7)  { animation-delay: 240ms; }
 .stagger-grid > *:nth-child(8)  { animation-delay: 280ms; }
 
+/* ── Product card hover (CSS puro = igual que el diseño HTML) ── */
+.product-card {
+  transition: transform .25s ease, box-shadow .25s ease;
+  box-shadow: 0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05);
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(34,38,29,.12);
+}
+.product-card-img {
+  transition: transform .5s ease;
+}
+.product-card:hover .product-card-img {
+  transform: scale(1.05);
+}
+
 /* ── Reducir movimiento (accesibilidad) ────────────────── */
 
 @media (prefers-reduced-motion: reduce) {

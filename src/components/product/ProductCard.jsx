@@ -45,20 +45,8 @@ export function ProductCard({ product, isFeatured = false }) {
 
     return (
         <article
-            className="group bg-white rounded-2xl overflow-hidden flex flex-col"
-            style={{
-                border: '1px solid rgba(34,38,29,.10)',
-                boxShadow: '0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05)',
-                transition: 'transform .25s ease, box-shadow .25s ease',
-            }}
-            onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-6px)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(34,38,29,.12)';
-            }}
-            onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05)';
-            }}
+            className="product-card group bg-white rounded-2xl overflow-hidden flex flex-col"
+            style={{ border: '1px solid rgba(34,38,29,.10)' }}
         >
             <Link to={`/producto/${product.id}`} className="flex flex-col flex-1">
                 {/* Image */}
@@ -66,7 +54,7 @@ export function ProductCard({ product, isFeatured = false }) {
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                        className="product-card-img w-full h-full object-cover"
                     />
                     {isFeatured && (
                         <span

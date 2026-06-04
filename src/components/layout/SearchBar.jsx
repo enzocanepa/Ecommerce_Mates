@@ -12,7 +12,7 @@ export function DesktopSearchBar({ value, onChange }) {
     };
     return (<form onSubmit={handleSubmit} className="relative flex-1 max-w-2xl">
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="¿Qué estás buscando?" className="w-full pl-4 pr-12 py-2.5 rounded-full bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all shadow-sm"/>
-      <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-[#c7e47d] text-[#4a5f2f] p-2 rounded-full hover:bg-[#b8d66e] transition-colors" aria-label="Buscar">
+      <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-[#566a2f] text-[#f3efe0] p-2 rounded-full hover:bg-[#465824] transition-colors" aria-label="Buscar">
         <Search className="w-4 h-4"/>
       </button>
     </form>);
@@ -54,8 +54,8 @@ export function MobileSearchOverlay({ value, onChange, onClose }) {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"/>
               <input ref={inputRef} type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Buscar productos..." className="w-full pl-12 pr-4 py-3 bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all"/>
             </div>
-            <button type="submit" disabled={!value.trim()} className={`w-full mt-4 py-3 rounded-xl transition-all ${value.trim()
-            ? 'bg-[#c7e47d] hover:bg-[#b8d66e] text-[#4a5f2f]'
+            <button type="submit" disabled={!value.trim()} className={`w-full mt-4 py-3 rounded-xl font-semibold transition-all ${value.trim()
+            ? 'bg-[#566a2f] hover:bg-[#465824] text-[#f3efe0]'
             : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
               Buscar
             </button>

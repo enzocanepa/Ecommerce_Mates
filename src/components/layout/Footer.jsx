@@ -8,12 +8,7 @@ export function Footer() {
                 {/* Brand */}
                 <div>
                     <Link to="/" className="inline-flex items-center gap-3 mb-[18px]">
-                        <span
-                            className="w-[42px] h-[42px] rounded-full bg-[#566a2f] text-[#f3efe0] grid place-items-center text-[20px] flex-shrink-0"
-                            style={{ fontFamily: "'DM Serif Display', Georgia, serif", boxShadow: 'inset 0 0 0 3px rgba(243,239,224,.25)' }}
-                        >
-                            M
-                        </span>
+                        <img src="/logo.webp" alt="Logo Mates Aconcagua" className="h-10 w-auto flex-shrink-0" />
                         <span>
                         <span style={{ color: '#f3efe0', fontFamily: "'DM Serif Display', Georgia, serif", fontSize: '21px', lineHeight: 1, letterSpacing: '.2px', display: 'block' }}>
                             Mates Aconcagua

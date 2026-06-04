@@ -51,12 +51,7 @@ export function Header() {
 
                 {/* Brand */}
                 <Link to="/" className="flex items-center gap-3 flex-shrink-0">
-                    <span
-                        className="w-[42px] h-[42px] rounded-full bg-[#566a2f] text-[#f3efe0] grid place-items-center text-[20px] flex-shrink-0"
-                        style={{ fontFamily: "'DM Serif Display', Georgia, serif", boxShadow: 'inset 0 0 0 3px rgba(243,239,224,.25)' }}
-                    >
-                        M
-                    </span>
+                    <img src="/logo.webp" alt="Logo Mates Aconcagua" className="h-10 w-auto flex-shrink-0" />
                     <span style={{ fontFamily: "'DM Serif Display', Georgia, serif" }} className="text-[21px] leading-none tracking-[.2px] text-[#22261d]">
                         Mates Aconcagua
                         <small className="block" style={{ fontFamily: "'Karla', sans-serif", fontSize: '10.5px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#6c7062', marginTop: '3px', fontWeight: 600 }}>
