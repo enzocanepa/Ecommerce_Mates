@@ -5,19 +5,26 @@ import { useProducts } from '../context/ProductsContext';
 import { usePageSEO } from '../hooks/usePageSEO';
 import { Skeleton } from '../components/ui/skeleton';
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react';
+
+const serif = "'DM Serif Display', Georgia, serif";
+
 function ProductCardSkeleton() {
-    return (<div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <Skeleton className="aspect-square w-full"/>
-      <div className="p-4 space-y-3">
-        <Skeleton className="h-5 w-3/4"/>
-        <Skeleton className="h-4 w-full"/>
-        <div className="flex items-center justify-between pt-1">
-          <Skeleton className="h-7 w-20"/>
-          <Skeleton className="h-9 w-24 rounded-lg"/>
+    return (
+        <div className="bg-white rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(34,38,29,.09)' }}>
+            <Skeleton className="aspect-square w-full" />
+            <div className="p-5 space-y-3">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <div className="flex items-center justify-between pt-1">
+                    <Skeleton className="h-7 w-24" />
+                    <Skeleton className="h-10 w-28 rounded-full" />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>);
+    );
 }
+
 const ITEMS_PER_PAGE = 8;
 const SORT_OPTIONS = [
     { value: 'relevance', label: 'Relevancia' },
@@ -33,6 +40,7 @@ const CATEGORIES = [
     { id: 'yerba', name: 'Yerba' },
     { id: 'accesorios', name: 'Accesorios' },
 ];
+
 export function Shop() {
     usePageSEO({
         title: 'Catálogo',
@@ -48,13 +56,14 @@ export function Shop() {
     const [showFilters, setShowFilters] = useState(false);
     const searchTerm = searchParams.get('search') || '';
     const maxProductPrice = Math.max(...products.map((p) => p.price), 0);
+
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedCategory, searchTerm, sortBy, minPrice, maxPrice]);
+
     const handleCategoryChange = (categoryId) => {
         setSelectedCategory(categoryId);
-        if (searchTerm)
-            setSearchParams({});
+        if (searchTerm) setSearchParams({});
     };
     const clearAllFilters = () => {
         setSelectedCategory('all');
@@ -63,41 +72,45 @@ export function Shop() {
         setMaxPrice('');
         setSearchParams({});
     };
-    const hasActiveFilters = selectedCategory !== 'all' ||
+    const hasActiveFilters =
+        selectedCategory !== 'all' ||
         sortBy !== 'relevance' ||
         minPrice !== '' ||
         maxPrice !== '' ||
         searchTerm !== '';
+
     // 1 — Category / search filter
     let filtered = searchTerm
-        ? products.filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (p.description ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.category.toLowerCase().includes(searchTerm.toLowerCase()))
+        ? products.filter(
+              (p) =>
+                  p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  (p.description ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  p.category.toLowerCase().includes(searchTerm.toLowerCase())
+          )
         : selectedCategory === 'all'
-            ? [...products]
-            : products.filter((p) => p.category === selectedCategory);
+        ? [...products]
+        : products.filter((p) => p.category === selectedCategory);
+
     // 2 — Price range filter
     const min = minPrice !== '' ? Number(minPrice) : 0;
     const max = maxPrice !== '' ? Number(maxPrice) : Infinity;
     filtered = filtered.filter((p) => p.price >= min && p.price <= max);
+
     // 3 — Sort
     filtered = [...filtered].sort((a, b) => {
         switch (sortBy) {
-            case 'price_asc':
-                return a.price - b.price;
-            case 'price_desc':
-                return b.price - a.price;
-            case 'name_asc':
-                return a.name.localeCompare(b.name, 'es');
-            case 'name_desc':
-                return b.name.localeCompare(a.name, 'es');
-            default:
-                return 0;
+            case 'price_asc': return a.price - b.price;
+            case 'price_desc': return b.price - a.price;
+            case 'name_asc': return a.name.localeCompare(b.name, 'es');
+            case 'name_desc': return b.name.localeCompare(a.name, 'es');
+            default: return 0;
         }
     });
+
     const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedProducts = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
@@ -108,151 +121,373 @@ export function Shop() {
         const pages = [];
         const maxVisible = 5;
         if (totalPages <= maxVisible) {
-            for (let i = 1; i <= totalPages; i++)
-                pages.push(i);
-        }
-        else if (currentPage <= 3) {
-            for (let i = 1; i <= 4; i++)
-                pages.push(i);
+            for (let i = 1; i <= totalPages; i++) pages.push(i);
+        } else if (currentPage <= 3) {
+            for (let i = 1; i <= 4; i++) pages.push(i);
             pages.push('...');
             pages.push(totalPages);
-        }
-        else if (currentPage >= totalPages - 2) {
+        } else if (currentPage >= totalPages - 2) {
             pages.push(1);
             pages.push('...');
-            for (let i = totalPages - 3; i <= totalPages; i++)
-                pages.push(i);
-        }
-        else {
+            for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+        } else {
             pages.push(1);
             pages.push('...');
-            for (let i = currentPage - 1; i <= currentPage + 1; i++)
-                pages.push(i);
+            for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
             pages.push('...');
             pages.push(totalPages);
         }
         return pages;
     };
-    return (<div className="py-12 bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl md:text-5xl text-center mb-8">Nuestro Catálogo</h1>
 
-        {searchTerm && (<div className="text-center mb-6">
-            <p className="text-lg text-gray-700">
-              Resultados para:{' '}
-              <span className="font-semibold">"{searchTerm}"</span>
-            </p>
-            <button onClick={() => {
-                setSearchParams({});
-                setSelectedCategory('all');
-            }} className="text-[#6b8e3d] hover:text-[#a8c95f] text-sm mt-2">
-              Limpiar búsqueda
-            </button>
-          </div>)}
+    return (
+        <div style={{ background: '#f6f4ec', minHeight: '100vh' }}>
 
-        {/* ── Toolbar ─────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          {/* Category pills */}
-          {!searchTerm && (<div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((cat) => (<button key={cat.id} onClick={() => handleCategoryChange(cat.id)} className={`px-5 py-2 rounded-full text-sm transition-colors ${selectedCategory === cat.id
-                    ? 'bg-[#c7e47d] text-[#4a5f2f] font-semibold'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
-                  {cat.name}
-                </button>))}
-            </div>)}
-
-          {/* Right controls */}
-          <div className="flex items-center gap-3 ml-auto">
-            {/* Sort */}
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#a8c95f]">
-              {SORT_OPTIONS.map((opt) => (<option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>))}
-            </select>
-
-            {/* Filter toggle */}
-            <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 text-sm border rounded-lg px-3 py-2 transition-colors ${showFilters || minPrice || maxPrice
-            ? 'bg-[#c7e47d] border-[#b8d66e] text-[#4a5f2f]'
-            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'}`}>
-              <SlidersHorizontal className="w-4 h-4"/>
-              Filtros
-              {(minPrice || maxPrice) && (<span className="bg-[#4a5f2f] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  !
-                </span>)}
-            </button>
-
-            {/* Clear all */}
-            {hasActiveFilters && (<button onClick={clearAllFilters} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors">
-                <X className="w-4 h-4"/>
-                Limpiar
-              </button>)}
-          </div>
-        </div>
-
-        {/* ── Price filter panel ──────────────────────────── */}
-        {showFilters && (<div className="bg-white border border-gray-200 rounded-xl p-5 mb-6 flex flex-wrap gap-6 items-end">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Precio mínimo (ARS)
-              </label>
-              <input type="number" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="0" min={0} max={maxProductPrice} className="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"/>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Precio máximo (ARS)
-              </label>
-              <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder={maxProductPrice.toLocaleString('es-AR')} min={0} className="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"/>
-            </div>
-            {(minPrice || maxPrice) && (<button onClick={() => { setMinPrice(''); setMaxPrice(''); }} className="text-sm text-[#6b8e3d] hover:text-[#4a5f2f] transition-colors">
-                Borrar rango
-              </button>)}
-          </div>)}
-
-        {/* ── Results count ───────────────────────────────── */}
-        <div className="mb-6 text-sm text-gray-500">
-          {filtered.length === 0
-            ? 'No se encontraron productos'
-            : `Mostrando ${startIndex + 1}–${Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} de ${filtered.length} productos`}
-        </div>
-
-        {/* ── Products grid ───────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {loading
-            ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i}/>)
-            : paginatedProducts.map((product) => (<ProductCard key={product.id} product={product}/>))}
-        </div>
-
-        {filtered.length === 0 && (<div className="text-center py-16">
-            <p className="text-gray-400 text-lg mb-4">No se encontraron productos con esos filtros.</p>
-            <button onClick={clearAllFilters} className="text-[#6b8e3d] hover:text-[#4a5f2f] transition-colors underline">
-              Limpiar todos los filtros
-            </button>
-          </div>)}
-
-        {/* ── Pagination ──────────────────────────────────── */}
-        {totalPages > 1 && (<div className="flex items-center justify-center gap-2 mt-8">
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-colors ${currentPage === 1
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
-              <ChevronLeft className="w-5 h-5"/>
-              Anterior
-            </button>
-
-            <div className="flex gap-2">
-              {getPageNumbers().map((page, idx) => page === '...' ? (<span key={`e-${idx}`} className="px-3 py-2 text-gray-400">...</span>) : (<button key={page} onClick={() => goToPage(page)} className={`px-4 py-2 rounded-lg transition-colors ${currentPage === page
-                    ? 'bg-[#c7e47d] text-[#4a5f2f] font-semibold'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
-                    {page}
-                  </button>))}
+            {/* ── Page header ──────────────────────────────────── */}
+            <div style={{ background: '#fff', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-10 md:py-14">
+                    <p
+                        className="text-[12px] font-bold tracking-[2.5px] uppercase mb-3"
+                        style={{ color: '#c06a34' }}
+                    >
+                        — Tienda —
+                    </p>
+                    <h1
+                        className="text-[32px] md:text-[42px] lg:text-[48px] leading-[1.1] tracking-[-0.3px] mb-2"
+                        style={{ fontFamily: serif, color: '#22261d' }}
+                    >
+                        Nuestro Catálogo
+                    </h1>
+                    <p className="text-[15px]" style={{ color: '#6c7062' }}>
+                        Productos artesanales seleccionados con pasión
+                    </p>
+                </div>
             </div>
 
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-colors ${currentPage === totalPages
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-white text-gray-700 hover:bg-gray-100'}`}>
-              Siguiente
-              <ChevronRight className="w-5 h-5"/>
-            </button>
-          </div>)}
-      </div>
-    </div>);
+            <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-8 md:py-10">
+
+                {/* ── Search result notice ─────────────────────── */}
+                {searchTerm && (
+                    <div
+                        className="mb-6 px-5 py-4 rounded-2xl flex flex-wrap items-center justify-between gap-3"
+                        style={{ background: '#eef0e3', border: '1px solid rgba(86,106,47,.2)' }}
+                    >
+                        <p className="text-[15px]" style={{ color: '#3f443a' }}>
+                            Resultados para:{' '}
+                            <span className="font-bold" style={{ color: '#465824' }}>"{searchTerm}"</span>
+                        </p>
+                        <button
+                            onClick={() => { setSearchParams({}); setSelectedCategory('all'); }}
+                            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-colors active:translate-y-px"
+                            style={{ color: '#566a2f' }}
+                            onMouseEnter={e => e.currentTarget.style.color = '#465824'}
+                            onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
+                        >
+                            <X className="w-4 h-4" />
+                            Limpiar búsqueda
+                        </button>
+                    </div>
+                )}
+
+                {/* ── Toolbar ─────────────────────────────────── */}
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+
+                    {/* Category pills */}
+                    {!searchTerm && (
+                        <div className="flex flex-wrap gap-2 flex-1">
+                            {CATEGORIES.map((cat) => {
+                                const isActive = selectedCategory === cat.id;
+                                return (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => handleCategoryChange(cat.id)}
+                                        className="text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                        style={{
+                                            height: '40px',
+                                            padding: '0 18px',
+                                            borderRadius: '10px',
+                                            border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                            background: isActive ? '#eef0e3' : '#fff',
+                                            color: isActive ? '#465824' : '#3f443a',
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (!isActive) {
+                                                e.currentTarget.style.borderColor = '#566a2f';
+                                                e.currentTarget.style.color = '#566a2f';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (!isActive) {
+                                                e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)';
+                                                e.currentTarget.style.color = '#3f443a';
+                                            }
+                                        }}
+                                    >
+                                        {cat.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {/* Right controls */}
+                    <div className="flex items-center gap-2.5 ml-auto">
+                        {/* Sort */}
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="text-[13.5px] font-medium focus:outline-none transition-colors"
+                            style={{
+                                height: '40px',
+                                padding: '0 14px',
+                                borderRadius: '10px',
+                                border: '1.5px solid rgba(34,38,29,.18)',
+                                background: '#fff',
+                                color: '#3f443a',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {SORT_OPTIONS.map((opt) => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                        </select>
+
+                        {/* Filter toggle */}
+                        <button
+                            onClick={() => setShowFilters(!showFilters)}
+                            className="inline-flex items-center gap-2 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                            style={{
+                                height: '40px',
+                                padding: '0 16px',
+                                borderRadius: '10px',
+                                border: `1.5px solid ${showFilters || minPrice || maxPrice ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                background: showFilters || minPrice || maxPrice ? '#eef0e3' : '#fff',
+                                color: showFilters || minPrice || maxPrice ? '#465824' : '#3f443a',
+                            }}
+                        >
+                            <SlidersHorizontal className="w-4 h-4" />
+                            Filtros
+                            {(minPrice || maxPrice) && (
+                                <span
+                                    className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+                                    style={{ background: '#c06a34' }}
+                                >
+                                    !
+                                </span>
+                            )}
+                        </button>
+
+                        {/* Clear all */}
+                        {hasActiveFilters && (
+                            <button
+                                onClick={clearAllFilters}
+                                className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-colors active:translate-y-px"
+                                style={{ color: '#6c7062' }}
+                                onMouseEnter={e => e.currentTarget.style.color = '#22261d'}
+                                onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}
+                            >
+                                <X className="w-4 h-4" />
+                                Limpiar
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* ── Price filter panel ──────────────────────── */}
+                {showFilters && (
+                    <div
+                        className="rounded-2xl p-5 mb-6 flex flex-wrap gap-6 items-end"
+                        style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)' }}
+                    >
+                        <div>
+                            <label
+                                className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2"
+                                style={{ color: '#6c7062' }}
+                            >
+                                Precio mínimo (ARS)
+                            </label>
+                            <input
+                                type="number"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                                placeholder="0"
+                                min={0}
+                                max={maxProductPrice}
+                                className="text-[14px] focus:outline-none transition-colors"
+                                style={{
+                                    width: '160px',
+                                    height: '40px',
+                                    padding: '0 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid rgba(34,38,29,.18)',
+                                    background: '#f6f4ec',
+                                    color: '#22261d',
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <label
+                                className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2"
+                                style={{ color: '#6c7062' }}
+                            >
+                                Precio máximo (ARS)
+                            </label>
+                            <input
+                                type="number"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                                placeholder={maxProductPrice.toLocaleString('es-AR')}
+                                min={0}
+                                className="text-[14px] focus:outline-none transition-colors"
+                                style={{
+                                    width: '160px',
+                                    height: '40px',
+                                    padding: '0 14px',
+                                    borderRadius: '10px',
+                                    border: '1.5px solid rgba(34,38,29,.18)',
+                                    background: '#f6f4ec',
+                                    color: '#22261d',
+                                }}
+                            />
+                        </div>
+                        {(minPrice || maxPrice) && (
+                            <button
+                                onClick={() => { setMinPrice(''); setMaxPrice(''); }}
+                                className="text-[13.5px] font-semibold transition-colors active:translate-y-px"
+                                style={{ color: '#566a2f' }}
+                                onMouseEnter={e => e.currentTarget.style.color = '#465824'}
+                                onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
+                            >
+                                Borrar rango
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* ── Results count ────────────────────────────── */}
+                <p className="mb-6 text-[13.5px]" style={{ color: '#6c7062' }}>
+                    {filtered.length === 0
+                        ? 'No se encontraron productos'
+                        : `Mostrando ${startIndex + 1}–${Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} de ${filtered.length} productos`}
+                </p>
+
+                {/* ── Products grid ────────────────────────────── */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+                    {loading
+                        ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
+                        : paginatedProducts.map((product) => (
+                              <ProductCard key={product.id} product={product} />
+                          ))}
+                </div>
+
+                {/* ── Empty state ──────────────────────────────── */}
+                {filtered.length === 0 && !loading && (
+                    <div className="text-center py-20">
+                        <span
+                            className="w-16 h-16 rounded-[18px] grid place-items-center mx-auto mb-5"
+                            style={{ background: '#eef0e3', color: '#566a2f' }}
+                        >
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                            </svg>
+                        </span>
+                        <p
+                            className="text-[18px] mb-2"
+                            style={{ fontFamily: serif, color: '#22261d' }}
+                        >
+                            No se encontraron productos
+                        </p>
+                        <p className="text-[14.5px] mb-6" style={{ color: '#6c7062' }}>
+                            Probá con otros filtros o términos de búsqueda.
+                        </p>
+                        <button
+                            onClick={clearAllFilters}
+                            className="inline-flex items-center gap-2 text-[14px] font-bold rounded-full transition-all duration-200 active:translate-y-px"
+                            style={{
+                                height: '44px',
+                                padding: '0 24px',
+                                background: '#566a2f',
+                                color: '#f3efe0',
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#465824'}
+                            onMouseLeave={e => e.currentTarget.style.background = '#566a2f'}
+                        >
+                            Limpiar todos los filtros
+                        </button>
+                    </div>
+                )}
+
+                {/* ── Pagination ───────────────────────────────── */}
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-4 pb-4">
+                        <button
+                            onClick={() => goToPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                            style={{
+                                height: '40px',
+                                padding: '0 16px',
+                                borderRadius: '20px',
+                                border: '1.5px solid rgba(34,38,29,.18)',
+                                background: currentPage === 1 ? '#f0ede5' : '#fff',
+                                color: currentPage === 1 ? '#b0b5a5' : '#3f443a',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                            Anterior
+                        </button>
+
+                        <div className="flex gap-1.5">
+                            {getPageNumbers().map((page, idx) =>
+                                page === '...' ? (
+                                    <span
+                                        key={`e-${idx}`}
+                                        className="flex items-center justify-center w-10 text-[14px]"
+                                        style={{ color: '#6c7062' }}
+                                    >
+                                        …
+                                    </span>
+                                ) : (
+                                    <button
+                                        key={page}
+                                        onClick={() => goToPage(page)}
+                                        className="text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                        style={{
+                                            width: '40px',
+                                            height: '40px',
+                                            borderRadius: '20px',
+                                            border: `1.5px solid ${currentPage === page ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                            background: currentPage === page ? '#eef0e3' : '#fff',
+                                            color: currentPage === page ? '#465824' : '#3f443a',
+                                        }}
+                                    >
+                                        {page}
+                                    </button>
+                                )
+                            )}
+                        </div>
+
+                        <button
+                            onClick={() => goToPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                            style={{
+                                height: '40px',
+                                padding: '0 16px',
+                                borderRadius: '20px',
+                                border: '1.5px solid rgba(34,38,29,.18)',
+                                background: currentPage === totalPages ? '#f0ede5' : '#fff',
+                                color: currentPage === totalPages ? '#b0b5a5' : '#3f443a',
+                                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            Siguiente
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }
