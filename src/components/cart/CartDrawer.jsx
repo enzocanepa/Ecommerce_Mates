@@ -154,19 +154,28 @@ export function CartDrawer() {
                                     >
                                         <button
                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                            className="w-[30px] h-[32px] flex items-center justify-center text-[16px] transition-colors"
+                                            className="w-[30px] h-[32px] flex items-center justify-center transition-colors"
                                             style={{ background: 'none', border: 'none', color: '#22261d', cursor: 'pointer' }}
                                             onMouseEnter={e => e.currentTarget.style.background = '#eef0e3'}
                                             onMouseLeave={e => e.currentTarget.style.background = 'none'}
                                         >
                                             <Minus className="w-3.5 h-3.5" />
                                         </button>
-                                        <span className="w-[30px] text-center text-[14px] font-bold" style={{ color: '#22261d' }}>
-                                            {item.quantity}
-                                        </span>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max={item.stock ?? 99}
+                                            value={item.quantity}
+                                            onChange={e => {
+                                                const val = parseInt(e.target.value, 10);
+                                                if (!isNaN(val) && val >= 1) updateQuantity(item.id, Math.min(val, item.stock ?? 99));
+                                            }}
+                                            className="text-center text-[14px] font-bold"
+                                            style={{ width: '36px', border: 'none', outline: 'none', background: 'none', color: '#22261d', fontFamily: "'Karla', sans-serif" }}
+                                        />
                                         <button
                                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                            className="w-[30px] h-[32px] flex items-center justify-center text-[16px] transition-colors"
+                                            className="w-[30px] h-[32px] flex items-center justify-center transition-colors"
                                             style={{ background: 'none', border: 'none', color: '#22261d', cursor: item.quantity >= (item.stock ?? 99) ? 'not-allowed' : 'pointer', opacity: item.quantity >= (item.stock ?? 99) ? 0.4 : 1 }}
                                             disabled={item.quantity >= (item.stock ?? 99)}
                                             onMouseEnter={e => { if (item.quantity < (item.stock ?? 99)) e.currentTarget.style.background = '#eef0e3'; }}
