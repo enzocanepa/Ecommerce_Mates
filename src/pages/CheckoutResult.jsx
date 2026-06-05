@@ -170,8 +170,8 @@ export function CheckoutResult() {
             {resultType !== 'failure' ? (<Link to="/pedidos" className="flex items-center justify-center gap-2 bg-[#c7e47d] text-[#4a5f2f] py-3 rounded-xl font-semibold hover:bg-[#b8d66e] transition-colors">
                 <ShoppingBag className="w-5 h-5"/>
                 Ver mis pedidos
-              </Link>) : (<Link to="/carrito" className="flex items-center justify-center gap-2 bg-[#c7e47d] text-[#4a5f2f] py-3 rounded-xl font-semibold hover:bg-[#b8d66e] transition-colors">
-                Volver al carrito
+              </Link>) : (<Link to="/tienda" className="flex items-center justify-center gap-2 bg-[#c7e47d] text-[#4a5f2f] py-3 rounded-xl font-semibold hover:bg-[#b8d66e] transition-colors">
+                Volver a la tienda
               </Link>)}
             <Link to="/tienda" className="text-[#6b8e3d] hover:text-[#4a5f2f] py-2 transition-colors text-sm">
               Seguir comprando

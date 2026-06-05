@@ -133,7 +133,7 @@ export function Checkout() {
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-          <Link to="/carrito" className="hover:text-gray-700 transition-colors">Carrito</Link>
+          <Link to="/tienda" className="hover:text-gray-700 transition-colors">Tienda</Link>
           <ChevronRight className="w-4 h-4"/>
           <span className="text-gray-800 font-medium">Checkout</span>
         </nav>
@@ -234,8 +234,8 @@ export function Checkout() {
                 Serás redirigido al sitio seguro de Mercado Pago
               </p>
 
-              <Link to="/carrito" className="block text-center mt-3 text-sm text-[#6b8e3d] hover:text-[#4a5f2f] transition-colors">
-                ← Volver al carrito
+              <Link to="/tienda" className="block text-center mt-3 text-sm text-[#6b8e3d] hover:text-[#4a5f2f] transition-colors">
+                ← Volver a la tienda
               </Link>
             </div>
           </div>

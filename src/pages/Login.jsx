@@ -6,15 +6,6 @@ import { BrandPanel } from '../components/auth/BrandPanel';
 
 const serif = "'DM Serif Display', Georgia, serif";
 
-const GoogleIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.5 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2-1.9 3.2-4.7 3.2-8z"/>
-        <path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.5-2.7c-1 .6-2.2 1-3.7 1-2.8 0-5.2-1.9-6.1-4.5H2.3v2.8A11 11 0 0 0 12 23z"/>
-        <path fill="#FBBC05" d="M5.9 14.2a6.6 6.6 0 0 1 0-4.2V7.2H2.3a11 11 0 0 0 0 9.8l3.6-2.8z"/>
-        <path fill="#EA4335" d="M12 5.4c1.6 0 3 .5 4.1 1.6l3-3A11 11 0 0 0 12 1 11 11 0 0 0 2.3 7.2l3.6 2.8C6.8 7.3 9.2 5.4 12 5.4z"/>
-    </svg>
-);
-
 export function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -197,32 +188,6 @@ export function Login() {
                             {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
                         </button>
                     </form>
-
-                    {/* Divider */}
-                    <div className="flex items-center gap-3.5 my-6 text-[13px]" style={{ color: '#6c7062' }}>
-                        <span className="flex-1 h-px" style={{ background: 'rgba(34,38,29,.12)' }} />
-                        o continuá con
-                        <span className="flex-1 h-px" style={{ background: 'rgba(34,38,29,.12)' }} />
-                    </div>
-
-                    {/* Google */}
-                    <button
-                        type="button"
-                        className="w-full flex items-center justify-center gap-2.5 font-bold text-[14.5px] transition-all duration-200"
-                        style={{
-                            height: '50px',
-                            borderRadius: '13px',
-                            border: '1.5px solid rgba(34,38,29,.12)',
-                            background: '#fff',
-                            color: '#22261d',
-                            cursor: 'pointer',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.background = '#fbfaf4'; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.background = '#fff'; }}
-                    >
-                        <GoogleIcon />
-                        Google
-                    </button>
 
                     {/* Bottom switch */}
                     <p className="mt-[22px] text-center text-[14.5px]" style={{ color: '#6c7062' }}>

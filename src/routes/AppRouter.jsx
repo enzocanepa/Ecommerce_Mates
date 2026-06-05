@@ -4,7 +4,6 @@ import { lazy, Suspense } from 'react';
 import { Layout } from '../pages/Layout';
 import { Home } from '../pages/Home';
 import { Shop } from '../pages/Shop';
-import { Cart } from '../pages/Cart';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
 import { NotFound } from '../pages/NotFound';
@@ -32,7 +31,6 @@ export const router = createBrowserRouter([
         children: [
             { index: true, Component: Home },
             { path: 'tienda', Component: Shop },
-            { path: 'carrito', Component: Cart },
             { path: 'login', Component: Login },
             { path: 'registro', Component: Signup },
             {

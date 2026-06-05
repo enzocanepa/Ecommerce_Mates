@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { cartService } from '../services/cartService';
 
@@ -18,7 +18,11 @@ export function CartProvider({ children }) {
     const { user, accessToken } = useAuth();
     const [cart, setCart]               = useState([]);
     const [initialized, setInitialized] = useState(false);
+    const [isCartOpen, setIsCartOpen]   = useState(false);
     const abandonedCartTimer = useRef(null);
+
+    const openCart  = useCallback(() => setIsCartOpen(true),  []);
+    const closeCart = useCallback(() => setIsCartOpen(false), []);
 
     // ── Initialize / re-sync cuando cambia la sesión ──────────────────────────
     useEffect(() => {
@@ -132,7 +136,7 @@ export function CartProvider({ children }) {
     const totalPrice = cart.reduce((s, i) => s + i.price * i.quantity, 0);
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, checkout, totalItems, totalPrice }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, checkout, totalItems, totalPrice, isCartOpen, openCart, closeCart }}>
             {children}
         </CartContext.Provider>
     );
