@@ -34,7 +34,7 @@ const inputError = { borderColor: '#e53e3e', background: '#fff5f5' };
 function Field({ label, field, type = 'text', placeholder, icon: Icon, form, errors, onChange, half = false }) {
     const hasError = !!errors[field];
     return (
-        <div style={{ gridColumn: half ? 'auto' : undefined }}>
+        <div id={`field-${field}`} style={{ gridColumn: half ? 'auto' : undefined }}>
             <label style={{ display: 'block', fontSize: '13.5px', fontWeight: 700, color: '#22261d', marginBottom: '7px' }}>
                 {label}
             </label>
@@ -107,8 +107,18 @@ export function Checkout() {
         if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
     }
 
+    const FIELD_ORDER = ['name', 'email', 'phone', 'street', 'city', 'province', 'postalCode'];
+
     async function handlePayment() {
-        if (!validate()) return;
+        if (!validate()) {
+            setTimeout(() => {
+                const firstField = FIELD_ORDER.find(f => document.getElementById(`field-${f}`)?.querySelector('p'));
+                const el = firstField ? document.getElementById(`field-${firstField}`) : null;
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 80);
+            return;
+        }
         setLoading(true);
         setApiError('');
         sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
@@ -165,23 +175,26 @@ export function Checkout() {
                         <span style={{ width: 30, height: 30, borderRadius: '50%', background: '#566a2f', color: '#f3efe0', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
                             <Check size={15} strokeWidth={3} />
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: '#22261d' }}>Carrito</span>
+                        <span className="stepper-label" style={{ fontSize: 14, fontWeight: 700, color: '#22261d' }}>Carrito</span>
                     </div>
-                    <div style={{ flex: 1, height: 2, background: '#566a2f', margin: '0 14px', minWidth: 24 }} />
+                    <div style={{ flex: 1, height: 2, background: '#566a2f', margin: '0 10px', minWidth: 16 }} />
                     {/* Step 2: Datos (active) */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                         <span style={{ width: 30, height: 30, borderRadius: '50%', background: '#c06a34', color: '#fff', display: 'grid', placeItems: 'center', fontSize: '13.5px', fontWeight: 700, boxShadow: '0 0 0 4px rgba(192,106,52,.18)', flexShrink: 0 }}>
                             2
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: '#22261d' }}>Datos &amp; envío</span>
+                        <span className="stepper-label" style={{ fontSize: 14, fontWeight: 700, color: '#22261d' }}>
+                            <span className="stepper-full">Datos &amp; envío</span>
+                            <span className="stepper-short">Datos</span>
+                        </span>
                     </div>
-                    <div style={{ flex: 1, height: 2, background: '#e0ddcf', margin: '0 14px', minWidth: 24 }} />
+                    <div style={{ flex: 1, height: 2, background: '#e0ddcf', margin: '0 10px', minWidth: 16 }} />
                     {/* Step 3: Pago (todo) */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                         <span style={{ width: 30, height: 30, borderRadius: '50%', background: '#e7e4d6', color: '#6c7062', display: 'grid', placeItems: 'center', fontSize: '13.5px', fontWeight: 700, flexShrink: 0 }}>
                             3
                         </span>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#6c7062' }}>Pago</span>
+                        <span className="stepper-label" style={{ fontSize: 14, fontWeight: 600, color: '#6c7062' }}>Pago</span>
                     </div>
                 </div>
 
@@ -286,15 +299,14 @@ export function Checkout() {
                         <div style={{ padding: '8px 24px', maxHeight: 260, overflowY: 'auto' }}>
                             {cart.map(item => (
                                 <div key={item.id} style={{ display: 'flex', gap: 13, padding: '14px 0', borderBottom: '1px solid rgba(34,38,29,.08)' }}>
-                                    <div style={{ width: 58, height: 58, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.08)', position: 'relative' }}>
+                                    <div style={{ width: 58, height: 58, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.08)' }}>
                                         <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = ''; }} />
-                                        <span style={{ position: 'absolute', top: -7, right: -7, minWidth: 21, height: 21, padding: '0 5px', borderRadius: 999, background: '#566a2f', color: '#f3efe0', fontSize: '11.5px', fontWeight: 700, display: 'grid', placeItems: 'center', border: '2px solid #fff' }}>
-                                            {item.quantity}
-                                        </span>
                                     </div>
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <p style={{ fontSize: '14.5px', fontWeight: 700, lineHeight: 1.3, color: '#22261d' }}>{item.name}</p>
-                                        <p style={{ fontSize: '12.5px', color: '#6c7062', marginTop: 2 }}>{item.category}</p>
+                                        <p style={{ fontSize: '12.5px', color: '#6c7062', marginTop: 2 }}>
+                                            {item.category} · Cantidad: {item.quantity}
+                                        </p>
                                     </div>
                                     <p style={{ fontFamily: "'Karla', sans-serif", fontWeight: 700, fontSize: '15px', whiteSpace: 'nowrap', color: '#22261d' }}>
                                         {fmt(item.price * item.quantity)}
@@ -387,6 +399,12 @@ export function Checkout() {
 
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
+                .stepper-short { display: none; }
+                .stepper-full { display: inline; }
+                @media (max-width: 480px) {
+                    .stepper-full { display: none; }
+                    .stepper-short { display: inline; }
+                }
                 @media (max-width: 860px) {
                     .checkout-grid { grid-template-columns: 1fr !important; }
                     .checkout-grid > div:last-child { position: static !important; }

@@ -192,39 +192,36 @@ export function Shop() {
                 {/* ── Toolbar ─────────────────────────────────── */}
                 <div className="mb-6">
 
-                    {/* Category pills */}
+                    {/* MOBILE: categorías scrollable + controles separados */}
                     {!searchTerm && (
-                        <>
-                            {/* Mobile: fila scrollable horizontal */}
-                            <div className="md:hidden flex gap-2 overflow-x-auto pb-1 mb-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                                {CATEGORIES.map((cat) => {
-                                    const isActive = selectedCategory === cat.id;
-                                    const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
-                                    return (
-                                        <button
-                                            key={cat.id}
-                                            onClick={() => handleCategoryChange(cat.id)}
-                                            className="flex-shrink-0 inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
-                                            style={{
-                                                height: '38px',
-                                                padding: '0 16px',
-                                                borderRadius: '20px',
-                                                border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
-                                                background: isActive ? '#566a2f' : '#fff',
-                                                color: isActive ? '#fff' : '#3f443a',
-                                            }}
-                                        >
-                                            {cat.name}
-                                            {count > 0 && (
-                                                <span className="text-[11px] font-bold" style={{ opacity: isActive ? .85 : .55 }}>{count}</span>
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
+                        <div className="md:hidden flex gap-2 overflow-x-auto pb-1 mb-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            {CATEGORIES.map((cat) => {
+                                const isActive = selectedCategory === cat.id;
+                                const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
+                                return (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => handleCategoryChange(cat.id)}
+                                        className="flex-shrink-0 inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                        style={{
+                                            height: '38px', padding: '0 16px', borderRadius: '20px',
+                                            border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                            background: isActive ? '#566a2f' : '#fff',
+                                            color: isActive ? '#fff' : '#3f443a',
+                                        }}
+                                    >
+                                        {cat.name}
+                                        {count > 0 && <span className="text-[11px] font-bold" style={{ opacity: isActive ? .85 : .55 }}>{count}</span>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
 
-                            {/* Desktop: fila con wrap */}
-                            <div className="hidden md:flex flex-wrap gap-2 flex-1 mb-4">
+                    {/* DESKTOP: categorías + controles en la misma fila */}
+                    <div className="hidden md:flex items-center gap-4 mb-0">
+                        {!searchTerm && (
+                            <div className="flex flex-wrap gap-2 flex-1">
                                 {CATEGORIES.map((cat) => {
                                     const isActive = selectedCategory === cat.id;
                                     return (
@@ -233,9 +230,7 @@ export function Shop() {
                                             onClick={() => handleCategoryChange(cat.id)}
                                             className="text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
                                             style={{
-                                                height: '40px',
-                                                padding: '0 18px',
-                                                borderRadius: '20px',
+                                                height: '40px', padding: '0 18px', borderRadius: '20px',
                                                 border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
                                                 background: isActive ? '#eef0e3' : '#fff',
                                                 color: isActive ? '#465824' : '#3f443a',
@@ -248,11 +243,31 @@ export function Shop() {
                                     );
                                 })}
                             </div>
-                        </>
-                    )}
+                        )}
+                        <div className="flex items-center gap-2 ml-auto flex-shrink-0">
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
+                                className="text-[13.5px] font-medium focus:outline-none transition-colors"
+                                style={{ height: '40px', padding: '0 14px', borderRadius: '20px', border: '1.5px solid rgba(34,38,29,.18)', background: '#fff', color: '#3f443a', cursor: 'pointer' }}>
+                                {SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                            </select>
+                            <button onClick={() => setShowFilters(!showFilters)}
+                                className="inline-flex items-center gap-2 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                style={{ height: '40px', padding: '0 16px', borderRadius: '20px', border: `1.5px solid ${showFilters || minPrice || maxPrice ? '#566a2f' : 'rgba(34,38,29,.18)'}`, background: showFilters || minPrice || maxPrice ? '#eef0e3' : '#fff', color: showFilters || minPrice || maxPrice ? '#465824' : '#3f443a' }}>
+                                <SlidersHorizontal className="w-4 h-4" />
+                                Filtros
+                                {(minPrice || maxPrice) && <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: '#c06a34' }}>!</span>}
+                            </button>
+                            {hasActiveFilters && (
+                                <button onClick={clearAllFilters} className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-colors active:translate-y-px" style={{ color: '#6c7062' }}
+                                    onMouseEnter={e => e.currentTarget.style.color = '#22261d'} onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}>
+                                    <X className="w-4 h-4" />Limpiar
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
-                    {/* Controls row */}
-                    <div className="flex items-center gap-2 ml-auto">
+                    {/* MOBILE: controles */}
+                    <div className="md:hidden flex items-center gap-2 ml-auto">
                         {/* Sort */}
                         <select
                             value={sortBy}
