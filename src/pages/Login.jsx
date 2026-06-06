@@ -37,7 +37,7 @@ export function Login() {
             <BrandPanel mode="login" />
 
             {/* Form side */}
-            <div className="flex items-center justify-center px-6 py-12 lg:py-0 relative min-h-screen lg:min-h-0">
+            <div className="flex items-center justify-center px-6 py-6 lg:py-0 relative min-h-screen lg:min-h-0">
 
                 {/* Top switch — desktop */}
                 <p className="absolute top-7 right-8 hidden lg:block text-[14px]" style={{ color: '#6c7062' }}>
@@ -54,12 +54,6 @@ export function Login() {
                 </p>
 
                 <div className="w-full max-w-[400px]">
-
-                    {/* Logo — mobile only */}
-                    <Link to="/" className="inline-flex items-center gap-2.5 mb-8 lg:hidden">
-                        <img src="/logo.webp" alt="Logo" className="h-9 w-auto" />
-                        <span style={{ fontFamily: serif, fontSize: '20px', color: '#22261d' }}>Mates Aconcagua</span>
-                    </Link>
 
                     {/* Form header */}
                     <div className="mb-7">

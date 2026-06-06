@@ -28,7 +28,9 @@
       "Bash(Select-Object -First 50)",
       "WebFetch(domain:api.anthropic.com)",
       "Bash(git rm *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\components\\\\product\\\\ReviewsSection.jsx\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\services\\\\reviewService.js\" -Force)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",

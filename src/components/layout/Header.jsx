@@ -117,9 +117,9 @@ export function Header() {
                 </div>
 
                 {/* ── MOBILE ── */}
-                <div className="md:hidden relative flex items-center h-[64px] px-4">
+                <div className="md:hidden flex items-center h-[64px] px-4 gap-3">
 
-                    {/* Izquierda: hamburger */}
+                    {/* Izquierda: hamburger + logo */}
                     <button
                         onClick={() => setDrawerOpen(true)}
                         className="flex-shrink-0 transition-colors"
@@ -129,14 +129,13 @@ export function Header() {
                         <Menu className="w-6 h-6" />
                     </button>
 
-                    {/* Centro: logo (posición absoluta para centrado perfecto) */}
-                    <Link
-                        to="/"
-                        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 flex-shrink-0"
-                    >
-                        <img src="/logo.webp" alt="Logo" className="h-8 w-auto" />
-                        <span style={{ fontFamily: serif, fontSize: 17, lineHeight: 1, color: '#22261d' }}>
+                    <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
+                        <img src="/logo.webp" alt="Logo Mates Aconcagua" className="h-9 w-auto flex-shrink-0" />
+                        <span style={{ fontFamily: serif }} className="text-[18px] leading-none tracking-[.2px] text-[#22261d]">
                             Mates Aconcagua
+                            <small className="block" style={{ fontFamily: "'Karla', sans-serif", fontSize: '9.5px', letterSpacing: '2.5px', textTransform: 'uppercase', color: '#6c7062', marginTop: '3px', fontWeight: 600 }}>
+                                Tradición artesanal
+                            </small>
                         </span>
                     </Link>
 

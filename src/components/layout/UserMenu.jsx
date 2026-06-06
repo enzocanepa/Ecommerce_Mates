@@ -1,6 +1,14 @@
 import { Link } from 'react-router';
+import { useRef, useEffect } from 'react';
 import { User, LogOut, Package, LayoutDashboard } from 'lucide-react';
 export function UserMenu({ user, isAdmin, isOpen, onToggle, onSignOut, onClose, mobile = false }) {
+    const ref = useRef(null);
+    useEffect(() => {
+        if (!isOpen) return;
+        const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose(); };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, [isOpen, onClose]);
     if (mobile) {
         return (<>
         <button onClick={onToggle} className="hover:text-green-200 transition-colors">
@@ -24,13 +32,13 @@ export function UserMenu({ user, isAdmin, isOpen, onToggle, onSignOut, onClose, 
           </div>)}
       </>);
     }
-    return (<div className="relative">
+    return (<div className="relative" ref={ref}>
       <button
         onClick={onToggle}
         className="inline-flex items-center gap-2 font-bold text-[14.5px] rounded-full h-[42px] px-4 transition-all duration-200 active:translate-y-px"
-        style={{ background: '#fff', border: '1px solid rgba(34,38,29,.18)', color: '#22261d' }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
+        style={{ background: '#566a2f', border: '1px solid #566a2f', color: '#fff' }}
+        onMouseEnter={e => { e.currentTarget.style.background = '#465824'; e.currentTarget.style.borderColor = '#465824'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = '#566a2f'; e.currentTarget.style.borderColor = '#566a2f'; }}
       >
         <User className="w-[17px] h-[17px]"/>
         <span>{user.name || user.email}</span>

@@ -56,8 +56,8 @@ export function ProductCard({ product, isFeatured = false }) {
                     <div className="flex items-center justify-between gap-3 mt-[18px]">
                         <div>
                             <span
-                                className="text-[27px] leading-none text-[#22261d]"
-                                style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+                                className="text-[27px] leading-none text-[#22261d] font-bold"
+                                style={{ fontFamily: "'Karla', sans-serif" }}
                             >
                                 ${product.price.toLocaleString('es-AR')}
                             </span>

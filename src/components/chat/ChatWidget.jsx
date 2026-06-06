@@ -46,6 +46,15 @@ const ChatWidget = () => {
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+    const widgetRef = useRef(null);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const handler = (e) => { if (widgetRef.current && !widgetRef.current.contains(e.target)) setIsOpen(false); };
+        document.addEventListener('mousedown', handler);
+        document.addEventListener('touchstart', handler);
+        return () => { document.removeEventListener('mousedown', handler); document.removeEventListener('touchstart', handler); };
+    }, [isOpen]);
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
@@ -107,7 +116,7 @@ const ChatWidget = () => {
     };
 
     return (
-      <div className="fixed bottom-6 right-6 z-[9999] font-sans">
+      <div className="fixed bottom-6 right-6 z-[9999] font-sans" ref={widgetRef}>
         {/* Chat window */}
         <div className={`absolute bottom-20 right-0 w-80 sm:w-96 flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out origin-bottom-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`} style={{ height: '520px', maxHeight: 'calc(100vh - 100px)' }}>
         {/* Header */}

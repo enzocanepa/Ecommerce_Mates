@@ -3,7 +3,6 @@ import { useProducts } from '../context/ProductsContext';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { usePageSEO } from '../hooks/usePageSEO';
-import { ReviewsSection } from '../components/product/ReviewsSection';
 import { ProductCard } from '../components/product/ProductCard';
 import { Check, ArrowLeft, ChevronLeft, ChevronRight, Package, Shield, Truck, Plus, Minus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -183,7 +182,7 @@ export function ProductDetail() {
                                     {product.name}
                                 </h1>
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-[38px] leading-none" style={{ fontFamily: serif, color: '#22261d' }}>
+                                    <span className="text-[38px] leading-none font-bold" style={{ fontFamily: "'Karla', sans-serif", color: '#22261d' }}>
                                         ${product.price.toLocaleString('es-AR')}
                                     </span>
                                     <span className="text-[13px] font-semibold" style={{ color: '#566a2f' }}>Envío gratis</span>
@@ -244,10 +243,10 @@ export function ProductDetail() {
                                 <p className="text-[13px] font-bold tracking-[1px] uppercase mb-3" style={{ color: '#6c7062' }}>
                                     Cantidad
                                 </p>
-                                <div className="flex items-center gap-3 mb-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
                                     {/* Stepper */}
                                     <div
-                                        className="flex items-center overflow-hidden flex-shrink-0"
+                                        className="flex items-center overflow-hidden self-start sm:flex-shrink-0"
                                         style={{ border: '1.5px solid rgba(34,38,29,.18)', borderRadius: '12px', background: '#f6f4ec' }}
                                     >
                                         <button
@@ -285,7 +284,7 @@ export function ProductDetail() {
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={product.stock === 0}
-                                        className="flex-1 flex items-center justify-center gap-2.5 font-bold text-[16px] transition-all duration-200 active:translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
+                                        className="w-full sm:flex-1 flex items-center justify-center gap-2.5 font-bold text-[16px] transition-all duration-200 active:translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
                                         style={{
                                             height: '52px',
                                             borderRadius: '13px',
@@ -331,9 +330,6 @@ export function ProductDetail() {
                         </div>
                     </div>
                 </div>
-
-                {/* Reviews */}
-                <ReviewsSection productId={product.id} />
 
                 {/* Related products */}
                 {relatedProducts.length > 0 && (

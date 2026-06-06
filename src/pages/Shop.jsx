@@ -190,48 +190,74 @@ export function Shop() {
                 )}
 
                 {/* ── Toolbar ─────────────────────────────────── */}
-                <div className="flex flex-wrap items-center gap-4 mb-6">
+                <div className="mb-6">
 
                     {/* Category pills */}
                     {!searchTerm && (
-                        <div className="flex flex-wrap gap-2 flex-1">
-                            {CATEGORIES.map((cat) => {
-                                const isActive = selectedCategory === cat.id;
-                                return (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => handleCategoryChange(cat.id)}
-                                        className="text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
-                                        style={{
-                                            height: '40px',
-                                            padding: '0 18px',
-                                            borderRadius: '20px',
-                                            border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
-                                            background: isActive ? '#eef0e3' : '#fff',
-                                            color: isActive ? '#465824' : '#3f443a',
-                                        }}
-                                        onMouseEnter={e => {
-                                            if (!isActive) {
-                                                e.currentTarget.style.borderColor = '#566a2f';
-                                                e.currentTarget.style.color = '#566a2f';
-                                            }
-                                        }}
-                                        onMouseLeave={e => {
-                                            if (!isActive) {
-                                                e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)';
-                                                e.currentTarget.style.color = '#3f443a';
-                                            }
-                                        }}
-                                    >
-                                        {cat.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        <>
+                            {/* Mobile: fila scrollable horizontal */}
+                            <div className="md:hidden flex gap-2 overflow-x-auto pb-1 mb-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                                {CATEGORIES.map((cat) => {
+                                    const isActive = selectedCategory === cat.id;
+                                    const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
+                                    return (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => handleCategoryChange(cat.id)}
+                                            className="flex-shrink-0 inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                            style={{
+                                                height: '38px',
+                                                padding: '0 16px',
+                                                borderRadius: '20px',
+                                                border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                                background: isActive ? '#566a2f' : '#fff',
+                                                color: isActive ? '#fff' : '#3f443a',
+                                            }}
+                                        >
+                                            {cat.name}
+                                            {count > 0 && (
+                                                <span className="text-[11px] font-bold" style={{ opacity: isActive ? .85 : .55 }}>{count}</span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Desktop: fila con wrap */}
+                            <div className="hidden md:flex flex-wrap gap-2 flex-1 mb-4">
+                                {CATEGORIES.map((cat) => {
+                                    const isActive = selectedCategory === cat.id;
+                                    return (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => handleCategoryChange(cat.id)}
+                                            className="text-[13.5px] font-semibold transition-all duration-200 active:translate-y-px"
+                                            style={{
+                                                height: '40px',
+                                                padding: '0 18px',
+                                                borderRadius: '20px',
+                                                border: `1.5px solid ${isActive ? '#566a2f' : 'rgba(34,38,29,.18)'}`,
+                                                background: isActive ? '#eef0e3' : '#fff',
+                                                color: isActive ? '#465824' : '#3f443a',
+                                            }}
+                                            onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; } }}
+                                            onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#3f443a'; } }}
+                                        >
+                                            {cat.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </>
                     )}
 
-                    {/* Right controls */}
-                    <div className="flex items-center gap-2.5 ml-auto">
+                    {/* Controls row */}
+                    <div className="flex items-center gap-2.5">
+                        {/* Product count — mobile only */}
+                        <span className="md:hidden text-[13px] font-semibold mr-auto" style={{ color: '#6c7062' }}>
+                            {filtered.length} producto{filtered.length !== 1 ? 's' : ''}
+                        </span>
+
                         {/* Sort */}
                         <select
                             value={sortBy}

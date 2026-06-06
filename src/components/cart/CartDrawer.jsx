@@ -75,7 +75,7 @@ export function CartDrawer() {
                         style={{ background: '#eef0e3', borderBottom: '1px solid rgba(34,38,29,.10)', color: '#465824' }}
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, color: '#566a2f' }}><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg>
-                        ¡Tu pedido tiene <b className="mx-1">envío gratis</b> a todo el país!
+                        <span>¡Tu pedido tiene <b>envío gratis</b> a todo el país!</span>
                     </div>
                 )}
 
@@ -186,7 +186,7 @@ export function CartDrawer() {
                                     </div>
 
                                     {/* Line total */}
-                                    <p className="text-[17px] whitespace-nowrap" style={{ fontFamily: serif, color: '#22261d' }}>
+                                    <p className="text-[17px] whitespace-nowrap font-bold" style={{ fontFamily: "'Karla', sans-serif", color: '#22261d' }}>
                                         {fmt(item.price * item.quantity)}
                                     </p>
                                 </div>
