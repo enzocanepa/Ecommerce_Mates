@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router';
 import { getBaseUrl } from '../services/api';
-import { Package, ShoppingBag, Check, ArrowRight, RotateCcw } from 'lucide-react';
+import { Package, ShoppingBag, Check, ArrowRight } from 'lucide-react';
 
 const BASE_URL = getBaseUrl();
 const serif = "'DM Serif Display', Georgia, serif";
@@ -129,7 +129,7 @@ export function Orders() {
                 </div>
 
                 {/* Tabs */}
-                <div style={{ display: 'flex', gap: 0, flexWrap: 'wrap', margin: '26px 0 24px', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                <div style={{ display: 'flex', gap: 0, flexWrap: 'nowrap', overflowX: 'auto', margin: '26px 0 24px', borderBottom: '1px solid rgba(34,38,29,.10)', scrollbarWidth: 'none' }}>
                     {TABS.map(t => {
                         const count = orders.filter(t.filter).length;
                         if (t.id !== 'all' && count === 0) return null;
@@ -145,6 +145,7 @@ export function Orders() {
                                     color: active ? '#566a2f' : '#6c7062',
                                     borderBottom: active ? '2px solid #566a2f' : '2px solid transparent',
                                     marginBottom: -1, transition: 'color .2s',
+                                    flexShrink: 0, whiteSpace: 'nowrap',
                                 }}
                             >
                                 {t.label}
@@ -205,20 +206,17 @@ export function Orders() {
                             <div style={{ padding: '8px 24px' }}>
                                 {order.items.map((item, i) => (
                                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 0', borderBottom: i < order.items.length - 1 ? '1px solid rgba(34,38,29,.08)' : 'none' }}>
-                                        <div style={{ width: 56, height: 56, borderRadius: 11, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.08)', position: 'relative' }}>
+                                        <div style={{ width: 56, height: 56, borderRadius: 11, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.08)' }}>
                                             {item.product?.image && (
                                                 <img src={item.product.image} alt={item.product?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
                                             )}
-                                            <span style={{ position: 'absolute', top: -7, right: -7, minWidth: 20, height: 20, padding: '0 5px', borderRadius: 999, background: '#566a2f', color: '#f3efe0', fontSize: 11, fontWeight: 700, display: 'grid', placeItems: 'center', border: '2px solid #fff' }}>
-                                                {item.quantity}
-                                            </span>
                                         </div>
                                         <div style={{ flex: 1, minWidth: 0 }}>
                                             <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.25, color: '#22261d' }}>
                                                 {item.product?.name ?? 'Producto'}
                                             </div>
                                             <div style={{ fontSize: '12.5px', color: '#6c7062', marginTop: 2 }}>
-                                                {item.product?.category ?? ''}
+                                                {[item.product?.category, `Cantidad: ${item.quantity}`].filter(Boolean).join(' · ')}
                                             </div>
                                         </div>
                                         <div style={{ fontFamily: "'Karla', sans-serif", fontWeight: 700, fontSize: 15, whiteSpace: 'nowrap', color: '#22261d' }}>
@@ -237,15 +235,6 @@ export function Orders() {
                                     </b>
                                 </span>
                                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                                    {order.status === 'completed' && (
-                                        <button
-                                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 40, padding: '0 16px', borderRadius: 999, border: '1px solid rgba(34,38,29,.18)', background: '#fff', color: '#22261d', fontWeight: 700, fontSize: '13.5px', cursor: 'pointer', fontFamily: "'Karla', sans-serif" }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
-                                        >
-                                            <RotateCcw size={14} /> Volver a pedir
-                                        </button>
-                                    )}
                                     {order.status === 'cancelled' && (
                                         <Link
                                             to="/tienda"
