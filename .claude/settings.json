@@ -26,7 +26,9 @@
       "Bash(git push *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\" -Recurse -Name)",
       "Bash(Select-Object -First 50)",
-      "WebFetch(domain:api.anthropic.com)"
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(git rm *)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",

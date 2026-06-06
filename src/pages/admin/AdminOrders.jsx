@@ -1,18 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { orderService } from '../../services/orderService';
+import { toast } from 'sonner';
 
-const STATUS = {
-    completed: { text: 'Completado', cls: 'bg-green-100 text-green-700' },
-    pending:   { text: 'Pendiente',  cls: 'bg-yellow-100 text-yellow-700' },
-    cancelled: { text: 'Cancelado',  cls: 'bg-red-100 text-red-700' },
-};
+const serif = "'DM Serif Display', Georgia, serif";
+
+const STATUS_OPTIONS = [
+    { value: 'pending',   label: 'Pendiente',        dot: '#d9a23a', bg: '#f7eed6', color: '#9a6b16' },
+    { value: 'preparing', label: 'En preparación',   dot: '#3b82bc', bg: '#e4ecf4', color: '#2b6087' },
+    { value: 'shipped',   label: 'Enviado',           dot: '#5b9c4e', bg: '#e6efe0', color: '#3f7a3a' },
+    { value: 'completed', label: 'Entregado',         dot: '#566a2f', bg: '#e6efe0', color: '#465824' },
+    { value: 'cancelled', label: 'Cancelado',         dot: '#c0392b', bg: '#fbe7e0', color: '#b1492a' },
+];
+
+function statusInfo(value) {
+    return STATUS_OPTIONS.find(s => s.value === value) ?? { label: value, dot: '#9a9d90', bg: '#f0efe8', color: '#6c7062' };
+}
+
+function StatusPill({ status }) {
+    const s = statusInfo(status);
+    return (
+        <span className="inline-flex items-center gap-1.5" style={{ fontSize: 12.5, fontWeight: 700, padding: '5px 12px', borderRadius: 999, background: s.bg, color: s.color, whiteSpace: 'nowrap' }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.dot, flexShrink: 0 }} />
+            {s.label}
+        </span>
+    );
+}
 
 export function AdminOrders() {
     const { accessToken } = useAuth();
     const [orders,  setOrders]  = useState([]);
     const [loading, setLoading] = useState(true);
     const [error,   setError]   = useState('');
+    const [updating, setUpdating] = useState(null);
 
     useEffect(() => {
         if (!accessToken) return;
@@ -22,68 +42,100 @@ export function AdminOrders() {
             .finally(() => setLoading(false));
     }, [accessToken]);
 
+    async function handleStatusChange(orderId, newStatus) {
+        setUpdating(orderId);
+        try {
+            await orderService.updateOrderStatus(orderId, newStatus, accessToken);
+            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+            toast.success('Estado actualizado.');
+        } catch {
+            toast.error('No se pudo actualizar el estado.');
+        } finally {
+            setUpdating(null);
+        }
+    }
+
     return (
-        <div className="p-8">
-            <div className="mb-6">
-                <h1 className="text-2xl font-semibold text-gray-800">Pedidos</h1>
-                <p className="text-gray-500 text-sm mt-1">Historial de órdenes de todos los usuarios</p>
+        <div style={{ padding: '38px 44px 60px' }}>
+            <div style={{ marginBottom: 24 }}>
+                <h1 style={{ fontFamily: serif, fontSize: 36, letterSpacing: '-.3px', lineHeight: 1.05, color: '#22261d' }}>Pedidos</h1>
+                <p style={{ fontSize: 15, color: '#7a7d70', marginTop: 5 }}>Historial de órdenes de todos los usuarios</p>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-4 border-[#a8c95f] border-t-transparent rounded-full animate-spin"/>
+                <div className="flex justify-center" style={{ paddingTop: 80 }}>
+                    <div style={{ width: 36, height: 36, border: '3px solid #e6efe0', borderTop: '3px solid #566a2f', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
                 </div>
             ) : error ? (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                    {error}
-                </div>
+                <div style={{ background: '#fbe7e0', border: '1px solid #f5c6bb', color: '#b1492a', padding: '12px 16px', borderRadius: 12, fontSize: 14 }}>{error}</div>
             ) : (
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <table className="w-full text-sm">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="text-left px-6 py-3 text-gray-500 font-medium">ID Pedido</th>
-                                <th className="text-left px-6 py-3 text-gray-500 font-medium">Usuario</th>
-                                <th className="text-left px-6 py-3 text-gray-500 font-medium">Fecha</th>
-                                <th className="text-right px-6 py-3 text-gray-500 font-medium">Total</th>
-                                <th className="text-center px-6 py-3 text-gray-500 font-medium">Estado</th>
-                                <th className="text-right px-6 py-3 text-gray-500 font-medium">Ítems</th>
+                <div style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)', borderRadius: 18, boxShadow: '0 1px 2px rgba(34,38,29,.05),0 4px 14px rgba(34,38,29,.05)', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{ background: '#faf9f3', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                                {['ID Pedido', 'Usuario', 'Fecha', 'Total', 'Estado', 'Ítems'].map((h, i) => (
+                                    <th key={h} style={{
+                                        textAlign: i === 3 ? 'right' : i === 5 ? 'right' : 'left',
+                                        fontSize: 12, fontWeight: 700, letterSpacing: '.6px',
+                                        textTransform: 'uppercase', color: '#7a7d70', padding: '16px 20px'
+                                    }}>{h}</th>
+                                ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {orders.map(order => {
-                                const status = STATUS[order.status] ?? { text: order.status, cls: 'bg-gray-100 text-gray-600' };
-                                return (
-                                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 font-mono text-xs text-gray-500">
-                                            {order.id.slice(0, 8).toUpperCase()}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600 text-xs">
-                                            {order.user?.email ?? order.user?.id?.slice(0, 8) ?? '—'}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {new Date(order.createdAt).toLocaleDateString('es-AR', {
-                                                day: '2-digit', month: '2-digit', year: 'numeric',
-                                                hour: '2-digit', minute: '2-digit',
-                                            })}
-                                        </td>
-                                        <td className="px-6 py-4 text-right font-semibold text-gray-800">
-                                            ${order.total.toLocaleString('es-AR')}
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${status.cls}`}>
-                                                {status.text}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-gray-600">
-                                            {order.items?.length ?? 0}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                        <tbody>
+                            {orders.map(order => (
+                                <tr key={order.id}
+                                    style={{ borderBottom: '1px solid rgba(34,38,29,.08)', transition: 'background .15s' }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#faf9f3'}
+                                    onMouseLeave={e => e.currentTarget.style.background = ''}>
+                                    <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                        <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d', fontVariantNumeric: 'tabular-nums', letterSpacing: '.3px' }}>
+                                            #{order.id.slice(0, 8).toUpperCase()}
+                                        </div>
+                                    </td>
+                                    <td style={{ padding: '14px 20px', fontSize: 13.5, color: '#7a7d70', verticalAlign: 'middle', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {order.user?.email ?? order.user?.id?.slice(0, 8) ?? '—'}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', fontSize: 13.5, color: '#7a7d70', verticalAlign: 'middle', fontVariantNumeric: 'tabular-nums' }}>
+                                        {new Date(order.createdAt).toLocaleDateString('es-AR', {
+                                            day: '2-digit', month: 'short', year: 'numeric',
+                                            hour: '2-digit', minute: '2-digit',
+                                        })}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 700, fontSize: 14.5, color: '#22261d', verticalAlign: 'middle', fontVariantNumeric: 'tabular-nums' }}>
+                                        ${order.total.toLocaleString('es-AR')}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                        {updating === order.id ? (
+                                            <StatusPill status={order.status} />
+                                        ) : (
+                                            <select
+                                                value={order.status}
+                                                onChange={e => handleStatusChange(order.id, e.target.value)}
+                                                style={{
+                                                    fontFamily: "'Karla', sans-serif", fontSize: 12.5, fontWeight: 700,
+                                                    border: '1px solid rgba(34,38,29,.12)', background: '#fff',
+                                                    borderRadius: 999, padding: '5px 10px', color: '#22261d',
+                                                    cursor: 'pointer', outline: 'none', transition: 'border-color .2s',
+                                                }}
+                                                onFocus={e => e.target.style.borderColor = '#566a2f'}
+                                                onBlur={e => e.target.style.borderColor = 'rgba(34,38,29,.12)'}
+                                            >
+                                                {STATUS_OPTIONS.map(s => (
+                                                    <option key={s.value} value={s.value}>{s.label}</option>
+                                                ))}
+                                            </select>
+                                        )}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'right', fontSize: 14.5, color: '#22261d', fontWeight: 600, verticalAlign: 'middle', fontVariantNumeric: 'tabular-nums' }}>
+                                        {order.items?.length ?? 0}
+                                    </td>
+                                </tr>
+                            ))}
                             {orders.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
+                                    <td colSpan={6} style={{ padding: '48px 20px', textAlign: 'center', color: '#9a9d90', fontSize: 14 }}>
                                         No hay pedidos registrados aún.
                                     </td>
                                 </tr>

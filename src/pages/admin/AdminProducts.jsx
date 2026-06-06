@@ -1,116 +1,112 @@
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, X, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Search, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProducts } from '../../context/ProductsContext';
 import { useAuth } from '../../context/AuthContext';
 import { apiRequest } from '../../services/api';
 
+const serif = "'DM Serif Display', Georgia, serif";
+
 const CATEGORIES = [
-    { value: 'mates',       label: 'Mates' },
-    { value: 'bombillas',   label: 'Bombillas' },
-    { value: 'yerba',       label: 'Yerba' },
-    { value: 'accesorios',  label: 'Accesorios' },
+    { value: 'mates',      label: 'Mates' },
+    { value: 'bombillas',  label: 'Bombillas' },
+    { value: 'yerba',      label: 'Yerba' },
+    { value: 'accesorios', label: 'Accesorios' },
 ];
 
+const CAT_STYLE = {
+    mates:      { bg: '#e6efe0', color: '#465824' },
+    bombillas:  { bg: '#e4ecf4', color: '#3f6f96' },
+    yerba:      { bg: '#f7eed6', color: '#a5781f' },
+    accesorios: { bg: '#efe6f1', color: '#7a5288' },
+};
+
 const EMPTY_FORM = {
-    name:            '',
-    description:     '',
-    fullDescription: '',
-    price:           0,
-    image:           '',
-    category:        'mates',
-    stock:           0,
-    variantsInput:   '',
+    name: '', description: '', fullDescription: '',
+    price: 0, image: '', category: 'mates', stock: 0, variantsInput: '',
 };
 
 function toFormData(p) {
-    return {
-        ...p,
-        variantsInput: (p.variants ?? [])
-            .map(v => (typeof v === 'string' ? v : v.name))
-            .join(', '),
-    };
+    return { ...p, variantsInput: (p.variants ?? []).map(v => (typeof v === 'string' ? v : v.name)).join(', ') };
 }
 
 function fromFormData(f) {
     const { variantsInput, variants: _v, images: _i, ...rest } = f;
-    const variants = variantsInput
-        .split(',')
-        .map(v => v.trim())
-        .filter(Boolean)
-        .map(name => ({ name }));
+    const variants = variantsInput.split(',').map(v => v.trim()).filter(Boolean).map(name => ({ name }));
     const images = rest.image ? [{ url: rest.image, position: 0 }] : [];
     return { ...rest, variants, images };
+}
+
+function StockPill({ stock }) {
+    const n = stock ?? 0;
+    if (n <= 10) return <span style={{ background: '#fbe7e0', color: '#b1492a', fontSize: 12.5, fontWeight: 700, padding: '4px 11px', borderRadius: 999 }}>{n}</span>;
+    if (n <= 20) return <span style={{ background: '#f7eed6', color: '#a5781f', fontSize: 12.5, fontWeight: 700, padding: '4px 11px', borderRadius: 999 }}>{n}</span>;
+    return <span style={{ background: '#e6efe0', color: '#566a2f', fontSize: 12.5, fontWeight: 700, padding: '4px 11px', borderRadius: 999 }}>{n}</span>;
+}
+
+const inputCls = {
+    width: '100%', border: '1.5px solid rgba(34,38,29,.12)', background: '#fff',
+    borderRadius: 11, padding: '12px 14px', fontFamily: "'Karla', sans-serif",
+    fontSize: 14.5, color: '#22261d', outline: 'none',
+};
+
+const focusStyle = { borderColor: '#566a2f', boxShadow: '0 0 0 4px rgba(86,106,47,.12)' };
+
+function Field({ label, required, optional, children }) {
+    return (
+        <div>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 700, marginBottom: 8, color: '#22261d' }}>
+                {label}
+                {required && <span style={{ color: '#c06a34', marginLeft: 3 }}>*</span>}
+                {optional && <span style={{ fontWeight: 500, color: '#7a7d70', fontSize: 12, marginLeft: 6 }}>(opcional)</span>}
+            </label>
+            {children}
+        </div>
+    );
 }
 
 export function AdminProducts() {
     const { products, refreshProducts } = useProducts();
     const { accessToken } = useAuth();
-    const [search,      setSearch]      = useState('');
-    const [modalOpen,   setModalOpen]   = useState(false);
-    const [editingId,   setEditingId]   = useState(null);
-    const [form,        setForm]        = useState(EMPTY_FORM);
-    const [saving,       setSaving]      = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleteError,  setDeleteError]  = useState('');
-    const [error,        setError]        = useState('');
+    const [search,        setSearch]        = useState('');
+    const [modalOpen,     setModalOpen]     = useState(false);
+    const [editingId,     setEditingId]     = useState(null);
+    const [form,          setForm]          = useState(EMPTY_FORM);
+    const [saving,        setSaving]        = useState(false);
+    const [deleteTarget,  setDeleteTarget]  = useState(null);
+    const [deleteError,   setDeleteError]   = useState('');
+    const [error,         setError]         = useState('');
+    const [focusedField,  setFocusedField]  = useState('');
 
     const filtered = products.filter(p =>
         p.name.toLowerCase().includes(search.toLowerCase()) ||
         p.category.toLowerCase().includes(search.toLowerCase())
     );
 
-    function openCreate() {
-        setEditingId(null);
-        setForm(EMPTY_FORM);
-        setError('');
-        setModalOpen(true);
-    }
-
-    function openEdit(product) {
-        setEditingId(product.id);
-        setForm(toFormData(product));
-        setError('');
-        setModalOpen(true);
-    }
-
-    function closeModal() {
-        setModalOpen(false);
-        setEditingId(null);
-        setError('');
-    }
-
-    function handleFieldChange(field, value) {
-        setForm(prev => ({ ...prev, [field]: value }));
-    }
+    function openCreate() { setEditingId(null); setForm(EMPTY_FORM); setError(''); setModalOpen(true); }
+    function openEdit(p)  { setEditingId(p.id); setForm(toFormData(p)); setError(''); setModalOpen(true); }
+    function closeModal() { setModalOpen(false); setEditingId(null); setError(''); }
+    function set(field, value) { setForm(prev => ({ ...prev, [field]: value })); }
 
     async function handleSave() {
         setError('');
-        if (!form.name.trim())        return setError('El nombre es obligatorio.');
-        if (form.price <= 0)          return setError('El precio debe ser mayor a 0.');
-        if (!form.image.trim())       return setError('La imagen es obligatoria.');
-
+        if (!form.name.trim())  return setError('El nombre es obligatorio.');
+        if (form.price <= 0)    return setError('El precio debe ser mayor a 0.');
+        if (!form.image.trim()) return setError('La imagen es obligatoria.');
         setSaving(true);
         try {
-            const productData = fromFormData(form);
+            const data = fromFormData(form);
             if (editingId !== null) {
-                await apiRequest(`/api/products/${editingId}`, {
-                    method: 'PUT',
-                    body: JSON.stringify(productData),
-                }, accessToken);
+                await apiRequest(`/api/products/${editingId}`, { method: 'PUT', body: JSON.stringify(data) }, accessToken);
                 toast.success('Producto actualizado.');
             } else {
-                await apiRequest('/api/products', {
-                    method: 'POST',
-                    body: JSON.stringify(productData),
-                }, accessToken);
+                await apiRequest('/api/products', { method: 'POST', body: JSON.stringify(data) }, accessToken);
                 toast.success('Producto creado.');
             }
             await refreshProducts();
             closeModal();
         } catch (err) {
-            console.error('Error al guardar producto:', err);
-            setError(err.message || 'Error al guardar. Verificá que tu sesión sea válida.');
+            setError(err.message || 'Error al guardar.');
         } finally {
             setSaving(false);
         }
@@ -125,90 +121,108 @@ export function AdminProducts() {
             toast.success('Producto eliminado.');
             setDeleteTarget(null);
         } catch (err) {
-            console.error('Error al eliminar producto:', err);
-            setDeleteError(err.message || 'Error al eliminar. Verificá que tu sesión sea válida.');
+            setDeleteError(err.message || 'Error al eliminar.');
         } finally {
             setSaving(false);
         }
     }
 
-    const categoryLabel = cat => CATEGORIES.find(c => c.value === cat)?.label ?? cat;
+    const getInputStyle = (field) => ({ ...inputCls, ...(focusedField === field ? focusStyle : {}) });
 
     return (
-        <div className="p-8">
+        <div style={{ padding: '38px 44px 60px' }}>
+
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-end justify-between flex-wrap gap-5" style={{ marginBottom: 24 }}>
                 <div>
-                    <h1 className="text-2xl font-semibold text-gray-800">Productos</h1>
-                    <p className="text-gray-500 text-sm mt-1">{products.length} productos en total</p>
+                    <h1 style={{ fontFamily: serif, fontSize: 36, letterSpacing: '-.3px', lineHeight: 1.05, color: '#22261d' }}>Productos</h1>
+                    <p style={{ fontSize: 15, color: '#7a7d70', marginTop: 5 }}>{products.length} productos en total</p>
                 </div>
-                <button onClick={openCreate} className="flex items-center gap-2 bg-[#a8c95f] hover:bg-[#97b84f] text-[#4a5f2f] font-semibold px-4 py-2.5 rounded-lg transition-colors">
-                    <Plus className="w-5 h-5"/>
+                <button
+                    onClick={openCreate}
+                    className="inline-flex items-center gap-2 active:translate-y-px"
+                    style={{ background: '#c06a34', color: '#fff', height: 46, padding: '0 20px', borderRadius: 11, fontWeight: 700, fontSize: 14.5, border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(192,106,52,.26)', transition: 'background .2s, transform .15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#ab5b2a'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#c06a34'}
+                >
+                    <Plus className="w-[18px] h-[18px]" />
                     Nuevo producto
                 </button>
             </div>
 
             {/* Search */}
-            <div className="relative mb-6 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"/>
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                    placeholder="Buscar por nombre o categoría..."
-                    className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"/>
+            <div className="relative" style={{ marginBottom: 18, maxWidth: 440 }}>
+                <Search className="absolute w-[18px] h-[18px]" style={{ left: 15, top: '50%', transform: 'translateY(-50%)', color: '#9a9d90', pointerEvents: 'none' }} />
+                <input
+                    type="text"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar por nombre o categoría…"
+                    style={{ width: '100%', height: 46, border: '1px solid rgba(34,38,29,.12)', background: '#fff', borderRadius: 12, paddingLeft: 44, paddingRight: 16, fontFamily: "'Karla', sans-serif", fontSize: 14.5, color: '#22261d', outline: 'none' }}
+                    onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.10)'; }}
+                    onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }}
+                />
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                <table className="w-full text-sm">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th className="text-left px-6 py-3 text-gray-500 font-medium">Producto</th>
-                            <th className="text-left px-6 py-3 text-gray-500 font-medium">Categoría</th>
-                            <th className="text-right px-6 py-3 text-gray-500 font-medium">Precio</th>
-                            <th className="text-right px-6 py-3 text-gray-500 font-medium">Stock</th>
-                            <th className="px-6 py-3"/>
+            <div style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)', borderRadius: 18, boxShadow: '0 1px 2px rgba(34,38,29,.05),0 4px 14px rgba(34,38,29,.05)', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr style={{ background: '#faf9f3', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                            {['Producto', 'Categoría', 'Precio', 'Stock', ''].map((h, i) => (
+                                <th key={i} style={{ textAlign: i >= 2 && i < 4 ? 'right' : i === 4 ? 'right' : 'left', fontSize: 12, fontWeight: 700, letterSpacing: '.6px', textTransform: 'uppercase', color: '#7a7d70', padding: '16px 20px' }}>{h}</th>
+                            ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {filtered.map(product => (
-                            <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <img src={product.image} alt={product.name}
-                                            className="w-10 h-10 rounded-lg object-cover bg-gray-100"
-                                            onError={e => { e.target.src = 'https://placehold.co/40'; }}/>
-                                        <span className="font-medium text-gray-800">{product.name}</span>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                        {categoryLabel(product.category)}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-right text-gray-700">
-                                    ${product.price.toLocaleString('es-AR')}
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <span className={`font-medium ${(product.stock ?? 0) <= 5 ? 'text-red-600' : 'text-gray-700'}`}>
-                                        {product.stock ?? 0}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <button onClick={() => openEdit(product)}
-                                            className="p-1.5 text-gray-400 hover:text-[#4a5f2f] hover:bg-gray-100 rounded-lg transition-colors" title="Editar">
-                                            <Pencil className="w-4 h-4"/>
-                                        </button>
-                                        <button onClick={() => setDeleteTarget(product.id)}
-                                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-                                            <Trash2 className="w-4 h-4"/>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                    <tbody>
+                        {filtered.map(product => {
+                            const cs = CAT_STYLE[product.category] ?? { bg: '#f0efe8', color: '#6c7062' };
+                            return (
+                                <tr key={product.id} style={{ borderBottom: '1px solid rgba(34,38,29,.08)', transition: 'background .15s' }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#faf9f3'}
+                                    onMouseLeave={e => e.currentTarget.style.background = ''}>
+                                    <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                        <div className="flex items-center gap-3">
+                                            <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.10)' }}>
+                                                <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                                            </div>
+                                            <div>
+                                                <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
+                                                {product.description && <div style={{ fontSize: 12.5, color: '#7a7d70', fontWeight: 500 }}>{product.description}</div>}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                        <span style={{ ...cs, fontSize: 12.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, display: 'inline-flex', textTransform: 'capitalize' }}>{product.category}</span>
+                                    </td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 700, fontSize: 14.5, color: '#22261d', verticalAlign: 'middle' }}>
+                                        ${product.price.toLocaleString('es-AR')}
+                                    </td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'right', verticalAlign: 'middle' }}>
+                                        <StockPill stock={product.stock} />
+                                    </td>
+                                    <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button onClick={() => openEdit(product)} title="Editar"
+                                                style={{ width: 36, height: 36, borderRadius: 9, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#7a7d70', display: 'grid', placeItems: 'center', cursor: 'pointer', transition: 'all .18s' }}
+                                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; e.currentTarget.style.background = '#f4f6ec'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#7a7d70'; e.currentTarget.style.background = '#fff'; }}>
+                                                <Pencil size={15} />
+                                            </button>
+                                            <button onClick={() => setDeleteTarget(product.id)} title="Eliminar"
+                                                style={{ width: 36, height: 36, borderRadius: 9, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#7a7d70', display: 'grid', placeItems: 'center', cursor: 'pointer', transition: 'all .18s' }}
+                                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; e.currentTarget.style.background = '#fbeae6'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#7a7d70'; e.currentTarget.style.background = '#fff'; }}>
+                                                <Trash2 size={15} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                                <td colSpan={5} style={{ padding: '48px 20px', textAlign: 'center', color: '#9a9d90', fontSize: 14 }}>
                                     No se encontraron productos.
                                 </td>
                             </tr>
@@ -217,145 +231,148 @@ export function AdminProducts() {
                 </table>
             </div>
 
-            {/* Delete confirm */}
+            {/* Delete modal */}
             {deleteTarget !== null && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">¿Eliminar producto?</h3>
-                        <p className="text-gray-500 text-sm mb-4">Esta acción no se puede deshacer.</p>
-                        {deleteError && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm mb-4">
-                                {deleteError}
+                <div className="fixed inset-0 z-50 flex items-start justify-center" style={{ background: 'rgba(34,38,29,.5)', backdropFilter: 'blur(3px)', padding: '46px 20px', overflowY: 'auto' }}>
+                    <div style={{ background: '#fff', borderRadius: 22, boxShadow: '0 24px 60px rgba(34,38,29,.26)', width: '100%', maxWidth: 420, overflow: 'hidden', animation: 'pop .26s cubic-bezier(.2,.9,.3,1.2)' }}>
+                        <div style={{ padding: '28px 26px 8px' }}>
+                            <div style={{ width: 52, height: 52, borderRadius: 14, background: '#fbe7e0', color: '#c0392b', display: 'grid', placeItems: 'center', marginBottom: 16 }}>
+                                <Trash2 size={22} />
                             </div>
-                        )}
-                        <div className="flex gap-3 justify-end">
+                            <h3 style={{ fontFamily: serif, fontSize: 23, color: '#22261d', marginBottom: 8 }}>¿Eliminar producto?</h3>
+                            <p style={{ fontSize: 14.5, color: '#7a7d70' }}>Esta acción no se puede deshacer.</p>
+                            {deleteError && <div style={{ marginTop: 14, background: '#fbe7e0', border: '1px solid #f5c6bb', color: '#b1492a', padding: '10px 14px', borderRadius: 10, fontSize: 13.5 }}>{deleteError}</div>}
+                        </div>
+                        <div className="flex items-center justify-end gap-3" style={{ padding: '18px 26px', borderTop: '1px solid rgba(34,38,29,.10)', background: '#faf9f3' }}>
                             <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }}
-                                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                style={{ height: 46, padding: '0 18px', borderRadius: 11, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#22261d', fontWeight: 700, fontSize: 14.5, cursor: 'pointer', transition: 'border-color .2s' }}
+                                onMouseEnter={e => e.currentTarget.style.borderColor = '#566a2f'}
+                                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'}>
                                 Cancelar
                             </button>
                             <button onClick={() => handleDelete(deleteTarget)} disabled={saving}
-                                className="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50">
-                                {saving ? 'Eliminando...' : 'Eliminar'}
+                                className="inline-flex items-center gap-2 active:translate-y-px"
+                                style={{ height: 46, padding: '0 20px', borderRadius: 11, border: 'none', background: '#c0392b', color: '#fff', fontWeight: 700, fontSize: 14.5, cursor: 'pointer', transition: 'background .2s', opacity: saving ? .6 : 1 }}
+                                onMouseEnter={e => { if (!saving) e.currentTarget.style.background = '#a52f23'; }}
+                                onMouseLeave={e => e.currentTarget.style.background = '#c0392b'}>
+                                <Trash2 size={16} />
+                                {saving ? 'Eliminando…' : 'Eliminar'}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Create / Edit Modal */}
+            {/* Create / Edit modal */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-                            <h2 className="text-lg font-semibold text-gray-800">
+                <div className="fixed inset-0 z-50 flex items-start justify-center" style={{ background: 'rgba(34,38,29,.5)', backdropFilter: 'blur(3px)', padding: '46px 20px', overflowY: 'auto' }}>
+                    <div style={{ background: '#fff', borderRadius: 22, boxShadow: '0 24px 60px rgba(34,38,29,.26)', width: '100%', maxWidth: 780, overflow: 'hidden', animation: 'pop .26s cubic-bezier(.2,.9,.3,1.2)' }}>
+                        {/* Modal header */}
+                        <div className="flex items-center justify-between" style={{ padding: '22px 26px', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
+                            <h3 style={{ fontFamily: serif, fontSize: 23, color: '#22261d' }}>
                                 {editingId !== null ? 'Editar producto' : 'Nuevo producto'}
-                            </h2>
-                            <button onClick={closeModal} className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                                <X className="w-5 h-5"/>
+                            </h3>
+                            <button onClick={closeModal}
+                                style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#7a7d70', display: 'grid', placeItems: 'center', cursor: 'pointer', transition: 'all .18s' }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#22261d'; e.currentTarget.style.color = '#22261d'; e.currentTarget.style.background = '#f4f3ec'; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#7a7d70'; e.currentTarget.style.background = '#fff'; }}>
+                                <X size={17} />
                             </button>
                         </div>
 
-                        <div className="px-6 py-6 space-y-5">
+                        {/* Modal body */}
+                        <div style={{ padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 18 }}>
                             {error && (
-                                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                                    {error}
-                                </div>
+                                <div style={{ background: '#fbe7e0', border: '1px solid #f5c6bb', color: '#b1492a', padding: '10px 14px', borderRadius: 10, fontSize: 13.5 }}>{error}</div>
                             )}
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div className="sm:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Nombre <span className="text-red-500">*</span>
-                                    </label>
-                                    <input type="text" value={form.name}
-                                        onChange={e => handleFieldChange('name', e.target.value)}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                        placeholder="Ej: Mate Calabaza Tradicional"/>
-                                </div>
+                            <Field label="Nombre" required>
+                                <input type="text" value={form.name} onChange={e => set('name', e.target.value)}
+                                    placeholder="Ej: Mate Calabaza Tradicional"
+                                    style={getInputStyle('name')}
+                                    onFocus={() => setFocusedField('name')} onBlur={() => setFocusedField('')} />
+                            </Field>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-                                    <select value={form.category} onChange={e => handleFieldChange('category', e.target.value)}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f] bg-white">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <Field label="Categoría">
+                                    <select value={form.category} onChange={e => set('category', e.target.value)}
+                                        style={{ ...getInputStyle('cat'), cursor: 'pointer' }}
+                                        onFocus={() => setFocusedField('cat')} onBlur={() => setFocusedField('')}>
                                         {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                                     </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Precio (ARS) <span className="text-red-500">*</span>
-                                    </label>
-                                    <input type="number" value={form.price || ''}
-                                        onChange={e => handleFieldChange('price', Number(e.target.value))}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                        placeholder="2500" min={0}/>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
-                                    <input type="number" value={form.stock ?? ''}
-                                        onChange={e => handleFieldChange('stock', Number(e.target.value))}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                        placeholder="10" min={0}/>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Variantes <span className="text-gray-400 font-normal">(separadas por coma)</span>
-                                    </label>
-                                    <input type="text" value={form.variantsInput}
-                                        onChange={e => handleFieldChange('variantsInput', e.target.value)}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                        placeholder="Natural, Con virola, Premium"/>
-                                </div>
+                                </Field>
+                                <Field label="Precio (ARS)" required>
+                                    <div style={{ position: 'relative' }}>
+                                        <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#7a7d70', fontWeight: 700, pointerEvents: 'none' }}>$</span>
+                                        <input type="number" value={form.price || ''} onChange={e => set('price', Number(e.target.value))}
+                                            placeholder="0" min={0}
+                                            style={{ ...getInputStyle('price'), paddingLeft: 28 }}
+                                            onFocus={() => setFocusedField('price')} onBlur={() => setFocusedField('')} />
+                                    </div>
+                                </Field>
+                                <Field label="Stock">
+                                    <input type="number" value={form.stock ?? ''} onChange={e => set('stock', Number(e.target.value))}
+                                        placeholder="0" min={0}
+                                        style={getInputStyle('stock')}
+                                        onFocus={() => setFocusedField('stock')} onBlur={() => setFocusedField('')} />
+                                </Field>
+                                <Field label="Variantes" optional>
+                                    <input type="text" value={form.variantsInput} onChange={e => set('variantsInput', e.target.value)}
+                                        placeholder="Natural, Con virola, Premium"
+                                        style={getInputStyle('var')}
+                                        onFocus={() => setFocusedField('var')} onBlur={() => setFocusedField('')} />
+                                </Field>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción corta</label>
-                                <input type="text" value={form.description}
-                                    onChange={e => handleFieldChange('description', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                    placeholder="Breve descripción del producto"/>
-                            </div>
+                            <Field label="Descripción corta">
+                                <input type="text" value={form.description} onChange={e => set('description', e.target.value)}
+                                    placeholder="Breve descripción del producto"
+                                    style={getInputStyle('desc')}
+                                    onFocus={() => setFocusedField('desc')} onBlur={() => setFocusedField('')} />
+                            </Field>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Descripción completa</label>
-                                <textarea value={form.fullDescription ?? ''}
-                                    onChange={e => handleFieldChange('fullDescription', e.target.value)}
-                                    rows={4}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f] resize-none"
-                                    placeholder="Descripción detallada que aparece en la página del producto..."/>
-                            </div>
+                            <Field label="Descripción completa">
+                                <textarea value={form.fullDescription ?? ''} onChange={e => set('fullDescription', e.target.value)}
+                                    rows={4} placeholder="Descripción detallada que aparece en la página del producto…"
+                                    style={{ ...getInputStyle('fdesc'), resize: 'vertical', minHeight: 84, lineHeight: 1.5 }}
+                                    onFocus={() => setFocusedField('fdesc')} onBlur={() => setFocusedField('')} />
+                            </Field>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    URL de imagen <span className="text-red-500">*</span>
-                                </label>
-                                <input type="url" value={form.image}
-                                    onChange={e => handleFieldChange('image', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#a8c95f]"
-                                    placeholder="https://ejemplo.com/imagen.jpg"/>
+                            <Field label="URL de imagen" required>
+                                <input type="url" value={form.image} onChange={e => set('image', e.target.value)}
+                                    placeholder="https://…"
+                                    style={getInputStyle('img')}
+                                    onFocus={() => setFocusedField('img')} onBlur={() => setFocusedField('')} />
                                 {form.image && (
-                                    <img src={form.image} alt="Preview"
-                                        className="mt-3 w-24 h-24 object-cover rounded-lg border border-gray-200"
-                                        onError={e => { e.target.style.display = 'none'; }}/>
+                                    <div style={{ marginTop: 12, width: 84, height: 84, borderRadius: 12, overflow: 'hidden', background: '#eceadf', border: '1px solid rgba(34,38,29,.10)' }}>
+                                        <img src={form.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                                    </div>
                                 )}
-                            </div>
+                            </Field>
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 sticky bottom-0 bg-white">
+                        {/* Modal footer */}
+                        <div className="flex items-center justify-end gap-3" style={{ padding: '18px 26px', borderTop: '1px solid rgba(34,38,29,.10)', background: '#faf9f3' }}>
                             <button onClick={closeModal}
-                                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                style={{ height: 46, padding: '0 18px', borderRadius: 11, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#22261d', fontWeight: 700, fontSize: 14.5, cursor: 'pointer', transition: 'border-color .2s' }}
+                                onMouseEnter={e => e.currentTarget.style.borderColor = '#566a2f'}
+                                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'}>
                                 Cancelar
                             </button>
                             <button onClick={handleSave} disabled={saving}
-                                className="px-5 py-2 text-sm text-[#4a5f2f] bg-[#a8c95f] hover:bg-[#97b84f] font-semibold rounded-lg transition-colors disabled:opacity-50">
-                                {saving ? 'Guardando...' : editingId !== null ? 'Guardar cambios' : 'Crear producto'}
+                                className="inline-flex items-center gap-2 active:translate-y-px"
+                                style={{ height: 46, padding: '0 20px', borderRadius: 11, border: 'none', background: '#566a2f', color: '#f3efe0', fontWeight: 700, fontSize: 14.5, cursor: 'pointer', transition: 'background .2s', opacity: saving ? .6 : 1 }}
+                                onMouseEnter={e => { if (!saving) e.currentTarget.style.background = '#465824'; }}
+                                onMouseLeave={e => e.currentTarget.style.background = '#566a2f'}>
+                                <Check size={16} />
+                                {saving ? 'Guardando…' : editingId !== null ? 'Guardar cambios' : 'Crear producto'}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+
+            <style>{`@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}`}</style>
         </div>
     );
 }

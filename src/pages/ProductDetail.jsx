@@ -72,36 +72,33 @@ export function ProductDetail() {
     return (
         <div style={{ background: '#f6f4ec', minHeight: '100vh' }}>
 
-            {/* Breadcrumb */}
-            <div style={{ borderBottom: '1px solid rgba(34,38,29,.10)', background: '#fff' }}>
-                <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-4 flex items-center gap-2 text-[13.5px]" style={{ color: '#6c7062' }}>
-                    <Link to="/" style={{ color: '#6c7062' }}
+            <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-6 md:py-8">
+
+                {/* Breadcrumb + back */}
+                <nav className="flex items-center gap-2 text-[13.5px] mb-8 flex-wrap" style={{ color: '#6c7062' }}>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="inline-flex items-center gap-1.5 font-semibold transition-colors"
+                        style={{ background: 'none', border: 'none', color: '#566a2f', cursor: 'pointer', padding: 0 }}
+                        onMouseEnter={e => e.currentTarget.style.color = '#465824'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
+                    >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        Volver
+                    </button>
+                    <span style={{ color: '#c4bfb0' }}>·</span>
+                    <Link to="/tienda"
                         onMouseEnter={e => e.currentTarget.style.color = '#566a2f'}
                         onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}
-                    >Inicio</Link>
-                    <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
-                    <Link to="/tienda" style={{ color: '#6c7062' }}
-                        onMouseEnter={e => e.currentTarget.style.color = '#566a2f'}
-                        onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}
+                        style={{ color: '#6c7062' }}
                     >Catálogo</Link>
-                    <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="font-semibold truncate" style={{ color: '#22261d' }}>{product.name}</span>
-                </div>
-            </div>
-
-            <div className="max-w-[1200px] mx-auto px-6 md:px-7 py-8 md:py-12">
-
-                {/* Back button */}
-                <button
-                    onClick={() => navigate(-1)}
-                    className="inline-flex items-center gap-2 text-[14px] font-semibold mb-8 transition-colors"
-                    style={{ background: 'none', border: 'none', color: '#566a2f', cursor: 'pointer', padding: 0 }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#465824'}
-                    onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Volver
-                </button>
+                    {product.category && (<>
+                        <span style={{ color: '#c4bfb0' }}>·</span>
+                        <span style={{ color: '#6c7062' }}>{product.category}</span>
+                    </>)}
+                    <span style={{ color: '#c4bfb0' }}>·</span>
+                    <span className="font-semibold truncate max-w-[200px]" style={{ color: '#22261d' }}>{product.name}</span>
+                </nav>
 
                 {/* Main card */}
                 <div

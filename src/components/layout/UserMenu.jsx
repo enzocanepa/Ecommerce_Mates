@@ -25,8 +25,14 @@ export function UserMenu({ user, isAdmin, isOpen, onToggle, onSignOut, onClose, 
       </>);
     }
     return (<div className="relative">
-      <button onClick={onToggle} className="flex items-center gap-2 bg-[#c7e47d] hover:bg-[#b8d66e] text-[#4a5f2f] px-4 py-2 rounded-lg transition-colors">
-        <User className="w-5 h-5"/>
+      <button
+        onClick={onToggle}
+        className="inline-flex items-center gap-2 font-bold text-[14.5px] rounded-full h-[42px] px-4 transition-all duration-200 active:translate-y-px"
+        style={{ background: '#fff', border: '1px solid rgba(34,38,29,.18)', color: '#22261d' }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
+      >
+        <User className="w-[17px] h-[17px]"/>
         <span>{user.name || user.email}</span>
       </button>
 
