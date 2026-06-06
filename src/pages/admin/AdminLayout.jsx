@@ -151,15 +151,15 @@ export function AdminLayout() {
                 {/* Mobile top bar */}
                 <div
                     className="md:hidden flex items-center gap-3 sticky top-0 z-30"
-                    style={{ background: '#f1efe6', borderBottom: '1px solid rgba(34,38,29,.10)', padding: '12px 16px' }}
+                    style={{ background: 'linear-gradient(135deg,#41501f,#3a4a1f)', padding: '13px 16px' }}
                 >
                     <button
                         onClick={() => setSideOpen(true)}
-                        style={{ background: '#fff', border: '1px solid rgba(34,38,29,.12)', borderRadius: 10, width: 40, height: 40, display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#22261d', flexShrink: 0 }}
+                        style={{ background: 'rgba(238,240,227,.15)', border: '1px solid rgba(238,240,227,.2)', borderRadius: 10, width: 40, height: 40, display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#eef0e3', flexShrink: 0 }}
                     >
                         <Menu size={20} />
                     </button>
-                    <span style={{ fontFamily: serif, fontSize: 18, color: '#22261d', fontWeight: 400 }}>Panel Admin</span>
+                    <span style={{ fontFamily: serif, fontSize: 20, color: '#eef0e3', fontWeight: 400, letterSpacing: '-.2px' }}>Panel Admin</span>
                 </div>
 
                 <Outlet />

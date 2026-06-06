@@ -186,7 +186,7 @@ export function AdminProducts() {
                                             <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.10)' }}>
                                                 <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
                                             </div>
-                                            <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
+                                            <div className="truncate max-w-[140px] md:max-w-[280px]" style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
                                         </div>
                                     </td>
                                     <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
