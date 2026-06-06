@@ -215,7 +215,7 @@ export function CartDrawer() {
                             style={{ borderTop: '1px solid rgba(34,38,29,.10)' }}
                         >
                             <span className="text-[16px] font-bold" style={{ color: '#22261d' }}>Total</span>
-                            <span className="text-[30px]" style={{ fontFamily: serif, color: '#22261d' }}>
+                            <span className="text-[30px] font-bold" style={{ fontFamily: "'Karla', sans-serif", color: '#22261d' }}>
                                 {fmt(totalPrice)}
                             </span>
                         </div>

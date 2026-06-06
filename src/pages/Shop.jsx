@@ -252,12 +252,7 @@ export function Shop() {
                     )}
 
                     {/* Controls row */}
-                    <div className="flex items-center gap-2.5">
-                        {/* Product count — mobile only */}
-                        <span className="md:hidden text-[13px] font-semibold mr-auto" style={{ color: '#6c7062' }}>
-                            {filtered.length} producto{filtered.length !== 1 ? 's' : ''}
-                        </span>
-
+                    <div className="flex items-center gap-2 ml-auto">
                         {/* Sort */}
                         <select
                             value={sortBy}
