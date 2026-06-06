@@ -60,7 +60,7 @@ export function AdminDashboard() {
     ];
 
     return (
-        <div style={{ padding: '38px 44px 60px' }}>
+        <div className="px-4 py-6 md:px-11 md:py-[38px]" style={{ paddingBottom: 60 }}>
             <div style={{ marginBottom: 30 }}>
                 <h1 style={{ fontFamily: serif, fontSize: 36, letterSpacing: '-.3px', lineHeight: 1.05, color: '#22261d' }}>Dashboard</h1>
                 <p style={{ fontSize: 15, color: '#7a7d70', marginTop: 5 }}>Resumen general del negocio</p>

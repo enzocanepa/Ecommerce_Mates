@@ -6,11 +6,9 @@ import { toast } from 'sonner';
 const serif = "'DM Serif Display', Georgia, serif";
 
 const STATUS_OPTIONS = [
-    { value: 'pending',   label: 'Pendiente',        dot: '#d9a23a', bg: '#f7eed6', color: '#9a6b16' },
-    { value: 'preparing', label: 'En preparación',   dot: '#3b82bc', bg: '#e4ecf4', color: '#2b6087' },
-    { value: 'shipped',   label: 'Enviado',           dot: '#5b9c4e', bg: '#e6efe0', color: '#3f7a3a' },
-    { value: 'completed', label: 'Entregado',         dot: '#566a2f', bg: '#e6efe0', color: '#465824' },
-    { value: 'cancelled', label: 'Cancelado',         dot: '#c0392b', bg: '#fbe7e0', color: '#b1492a' },
+    { value: 'pending',   label: 'Pendiente',  dot: '#d9a23a', bg: '#f7eed6', color: '#9a6b16' },
+    { value: 'completed', label: 'Completado', dot: '#566a2f', bg: '#e6efe0', color: '#465824' },
+    { value: 'cancelled', label: 'Cancelado',  dot: '#c0392b', bg: '#fbe7e0', color: '#b1492a' },
 ];
 
 function statusInfo(value) {
@@ -56,7 +54,7 @@ export function AdminOrders() {
     }
 
     return (
-        <div style={{ padding: '38px 44px 60px' }}>
+        <div className="px-4 py-6 md:px-11 md:py-[38px]" style={{ paddingBottom: 60 }}>
             <div style={{ marginBottom: 24 }}>
                 <h1 style={{ fontFamily: serif, fontSize: 36, letterSpacing: '-.3px', lineHeight: 1.05, color: '#22261d' }}>Pedidos</h1>
                 <p style={{ fontSize: 15, color: '#7a7d70', marginTop: 5 }}>Historial de órdenes de todos los usuarios</p>

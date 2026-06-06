@@ -130,7 +130,7 @@ export function AdminProducts() {
     const getInputStyle = (field) => ({ ...inputCls, ...(focusedField === field ? focusStyle : {}) });
 
     return (
-        <div style={{ padding: '38px 44px 60px' }}>
+        <div className="px-4 py-6 md:px-11 md:py-[38px]" style={{ paddingBottom: 60 }}>
 
             {/* Header */}
             <div className="flex items-end justify-between flex-wrap gap-5" style={{ marginBottom: 24 }}>
@@ -151,7 +151,7 @@ export function AdminProducts() {
             </div>
 
             {/* Search */}
-            <div className="relative" style={{ marginBottom: 18, maxWidth: 440 }}>
+            <div className="relative" style={{ marginBottom: 18 }}>
                 <Search className="absolute w-[18px] h-[18px]" style={{ left: 15, top: '50%', transform: 'translateY(-50%)', color: '#9a9d90', pointerEvents: 'none' }} />
                 <input
                     type="text"
@@ -186,10 +186,7 @@ export function AdminProducts() {
                                             <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.10)' }}>
                                                 <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
                                             </div>
-                                            <div>
-                                                <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
-                                                {product.description && <div style={{ fontSize: 12.5, color: '#7a7d70', fontWeight: 500 }}>{product.description}</div>}
-                                            </div>
+                                            <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
                                         </div>
                                     </td>
                                     <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
