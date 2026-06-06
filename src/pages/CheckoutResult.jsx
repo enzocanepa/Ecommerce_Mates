@@ -32,6 +32,12 @@ const pulseStyle = `
 .ma-ring { animation: ma-pulse 2s ease-out infinite; }
 .ma-draw { stroke-dasharray:60; stroke-dashoffset:60; animation: ma-draw .6s .25s ease forwards; }
 @media(prefers-reduced-motion:reduce){ .ma-ring{animation:none;opacity:0} .ma-draw{animation:none;stroke-dashoffset:0} }
+.ma-tl-label { font-size:12.5px; font-weight:700; line-height:1.25; text-align:center; white-space:nowrap; }
+.ma-tl-sub   { font-size:11px; color:#6c7062; white-space:nowrap; }
+@media(max-width:400px){
+  .ma-tl-label { font-size:10px; }
+  .ma-tl-sub   { font-size:9.5px; }
+}
 `;
 
 /* ── Timeline step ── */
@@ -48,18 +54,18 @@ function TimelineStep({ done, icon, label, sub, isFirst }) {
             }}>
                 {icon}
             </span>
-            <span style={{ fontSize: '12.5px', fontWeight: 700, color: done ? '#22261d' : '#6c7062', lineHeight: 1.25, textAlign: 'center' }}>{label}</span>
-            <span style={{ fontSize: 11, color: '#6c7062' }}>{sub}</span>
+            <span className="ma-tl-label" style={{ color: done ? '#22261d' : '#6c7062' }}>{label}</span>
+            <span className="ma-tl-sub">{sub}</span>
         </div>
     );
 }
 
 /* ── Info row ── */
-function InfoRow({ label, value, valueStyle }) {
+function InfoRow({ label, value, valueStyle, truncate }) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderTop: '1px solid rgba(34,38,29,.10)' }}>
-            <span style={{ fontSize: 13, color: '#6c7062', fontWeight: 600, whiteSpace: 'nowrap' }}>{label}</span>
-            <span style={{ fontSize: '14.5px', fontWeight: 700, whiteSpace: 'nowrap', ...valueStyle }}>{value}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '7px 0', borderTop: '1px solid rgba(34,38,29,.10)' }}>
+            <span style={{ fontSize: 13, color: '#6c7062', fontWeight: 600, flexShrink: 0 }}>{label}</span>
+            <span style={{ fontSize: '14.5px', fontWeight: 700, minWidth: 0, ...(truncate ? { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : { whiteSpace: 'nowrap' }), ...valueStyle }}>{value}</span>
         </div>
     );
 }
@@ -68,7 +74,7 @@ export function CheckoutResult() {
     const location = useLocation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { cart, totalPrice, clearCart } = useCart();
+    const { cart, totalPrice, clearCart, openCart } = useCart();
     const { accessToken, user } = useAuth();
     const [orderCreated, setOrderCreated] = useState(false);
     const orderAttempted = useRef(false);
@@ -210,7 +216,7 @@ export function CheckoutResult() {
                     <div style={{ background: '#f6f4ec', border: '1px solid rgba(34,38,29,.10)', borderRadius: 14, padding: '4px 20px 10px', textAlign: 'left', marginBottom: 24 }}>
                         {paymentId && <InfoRow label={isOk ? 'ID de pago' : 'ID de operación'} value={paymentId} />}
                         {!isOk && <InfoRow label="Estado" value="Rechazado" valueStyle={{ color: '#c0392b' }} />}
-                        {isOk && user?.email && <InfoRow label="Email de confirmación" value={user.email} />}
+                        {isOk && user?.email && <InfoRow label="Email de confirmación" value={user.email} truncate />}
                         {isOk && (
                             <InfoRow
                                 label="Total abonado"
@@ -274,13 +280,24 @@ export function CheckoutResult() {
                             </button>
                         )}
 
-                        <Link to="/tienda"
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46, borderRadius: 10, background: 'none', border: 'none', color: '#566a2f', fontWeight: 700, fontSize: '14.5px', cursor: 'pointer', fontFamily: "'Karla', sans-serif" }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#eef0e3'}
-                            onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                        >
-                            {isOk ? 'Seguir comprando' : 'Volver al carrito'}
-                        </Link>
+                        {isOk ? (
+                            <Link to="/tienda"
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46, borderRadius: 10, background: 'none', border: 'none', color: '#566a2f', fontWeight: 700, fontSize: '14.5px', cursor: 'pointer', fontFamily: "'Karla', sans-serif" }}
+                                onMouseEnter={e => e.currentTarget.style.background = '#eef0e3'}
+                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                            >
+                                Seguir comprando
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={() => { navigate('/tienda'); openCart(); }}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 46, borderRadius: 10, background: 'none', border: 'none', color: '#566a2f', fontWeight: 700, fontSize: '14.5px', cursor: 'pointer', width: '100%', fontFamily: "'Karla', sans-serif" }}
+                                onMouseEnter={e => e.currentTarget.style.background = '#eef0e3'}
+                                onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                            >
+                                Volver al carrito
+                            </button>
+                        )}
                     </div>
 
                     {/* Help note */}

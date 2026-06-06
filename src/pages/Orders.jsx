@@ -9,6 +9,7 @@ const serif = "'DM Serif Display', Georgia, serif";
 
 const STATUS_META = {
     pending:   { label: 'En preparación', bg: '#fbf1dd', color: '#9a6b16', dot: '#d9a23a' },
+    shipped:   { label: 'Enviado',        bg: '#e3eef8', color: '#1d5c8a', dot: '#2b7cb8' },
     completed: { label: 'Entregado',      bg: '#eef0e3', color: '#465824', dot: '#566a2f' },
     cancelled: { label: 'Cancelado',      bg: '#fde8e8', color: '#c53030', dot: '#e53e3e' },
 };
@@ -17,6 +18,7 @@ const PROGRESS_STEPS = ['Confirmado', 'En preparación', 'Enviado', 'Entregado']
 
 function getProgressIndex(status) {
     if (status === 'completed') return 4;
+    if (status === 'shipped')   return 3;
     if (status === 'pending')   return 1;
     return -1;
 }
@@ -89,6 +91,7 @@ export function Orders() {
     const TABS = [
         { id: 'all',       label: 'Todos',      filter: () => true },
         { id: 'active',    label: 'En curso',   filter: o => o.status === 'pending' },
+        { id: 'shipped',   label: 'Enviados',   filter: o => o.status === 'shipped' },
         { id: 'delivered', label: 'Entregados', filter: o => o.status === 'completed' },
         { id: 'cancelled', label: 'Cancelados', filter: o => o.status === 'cancelled' },
     ];

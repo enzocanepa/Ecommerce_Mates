@@ -7,6 +7,7 @@ const serif = "'DM Serif Display', Georgia, serif";
 
 const STATUS_OPTIONS = [
     { value: 'pending',   label: 'Pendiente',  dot: '#d9a23a', bg: '#f7eed6', color: '#9a6b16' },
+    { value: 'shipped',   label: 'Enviado',    dot: '#2b7cb8', bg: '#e3eef8', color: '#1d5c8a' },
     { value: 'completed', label: 'Completado', dot: '#566a2f', bg: '#e6efe0', color: '#465824' },
     { value: 'cancelled', label: 'Cancelado',  dot: '#c0392b', bg: '#fbe7e0', color: '#b1492a' },
 ];
