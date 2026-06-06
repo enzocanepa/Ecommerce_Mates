@@ -15,7 +15,7 @@ const features = [
             </svg>
         ),
         title: 'Despacho 24–48hs',
-        desc: 'CABA y GBA',
+        desc: 'Gran Mendoza',
     },
     {
         icon: (

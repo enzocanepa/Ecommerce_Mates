@@ -127,10 +127,10 @@ export function About() {
                             }}
                         >
                             <b style={{ fontFamily: serif, fontSize: '22px', display: 'block', lineHeight: 1 }}>
-                                +15 años
+                                100% artesanal
                             </b>
                             <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '.4px' }}>
-                                compartiendo mate
+                                hecho en Mendoza
                             </span>
                         </div>
                     </div>

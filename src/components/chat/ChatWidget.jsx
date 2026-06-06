@@ -17,7 +17,7 @@ function getFallbackResponse(text) {
         return 'Para curar tu mate nuevo: llenalo con yerba húmeda hasta el borde y dejalo 24 hs. Luego vaciá raspando suavemente las paredes con una cuchara. Repetí 2-3 veces. Así el mate desarrolla su sabor y dura muchos años. 🧉';
     }
     if (t.includes('envío') || t.includes('envio') || t.includes('tarda') || t.includes('demora') || t.includes('llega') || t.includes('entrega')) {
-        return 'El envío es GRATIS en todos los pedidos 🎉 CABA y GBA: 24-48hs. Interior del país: 3 a 7 días hábiles.';
+        return 'El envío es GRATIS en todos los pedidos 🎉 Gran Mendoza: 24-48hs. Interior del país: 3 a 7 días hábiles.';
     }
     if (t.includes('pago') || t.includes('pagar') || t.includes('tarjeta') || t.includes('mercado pago') || t.includes('abono')) {
         return 'Aceptamos Mercado Pago: podés pagar con tarjeta de crédito, débito o saldo en cuenta MP. El proceso es 100% seguro. 💳';

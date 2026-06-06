@@ -8,7 +8,9 @@ export function Footer() {
                 {/* Brand */}
                 <div>
                     <Link to="/" className="inline-flex items-center gap-3 mb-[18px]">
-                        <img src="/logo.webp" alt="Logo Mates Aconcagua" className="h-10 w-auto flex-shrink-0" />
+                        <div style={{ width: 46, height: 46, borderRadius: '50%', background: '#f3efe0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 0 0 2px rgba(243,239,224,.2)' }}>
+                            <img src="/logo.webp" alt="Logo Mates Aconcagua" style={{ height: 34, width: 'auto' }} />
+                        </div>
                         <span>
                         <span style={{ color: '#f3efe0', fontFamily: "'DM Serif Display', Georgia, serif", fontSize: '21px', lineHeight: 1, letterSpacing: '.2px', display: 'block' }}>
                             Mates Aconcagua
@@ -60,7 +62,7 @@ export function Footer() {
                         </li>
                         <li className="flex gap-2.5 mb-3" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg>
-                            Envíos 24–48hs CABA/GBA · 3–7 días interior
+                            Envíos 24–48hs Gran Mendoza · 3–7 días interior
                         </li>
                         <li className="flex gap-2.5" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
