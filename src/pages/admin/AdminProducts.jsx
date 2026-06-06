@@ -164,8 +164,52 @@ export function AdminProducts() {
                 />
             </div>
 
-            {/* Table */}
-            <div style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)', borderRadius: 18, boxShadow: '0 1px 2px rgba(34,38,29,.05),0 4px 14px rgba(34,38,29,.05)', overflow: 'hidden' }}>
+            {/* ── MOBILE: cards ── */}
+            <div className="md:hidden flex flex-col gap-3">
+                {filtered.length === 0 ? (
+                    <p style={{ textAlign: 'center', color: '#9a9d90', fontSize: 14, padding: '40px 0' }}>No se encontraron productos.</p>
+                ) : filtered.map(product => {
+                    const cs = CAT_STYLE[product.category] ?? { bg: '#f0efe8', color: '#6c7062' };
+                    return (
+                        <div key={product.id} style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)', borderRadius: 16, padding: 14, boxShadow: '0 1px 2px rgba(34,38,29,.05),0 4px 14px rgba(34,38,29,.05)' }}>
+                            {/* Fila 1: imagen + nombre + acciones */}
+                            <div className="flex items-center gap-3" style={{ marginBottom: 10 }}>
+                                <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.10)' }}>
+                                    <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                                </div>
+                                <div style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {product.name}
+                                </div>
+                                <div className="flex items-center gap-2 flex-shrink-0">
+                                    <button onClick={() => openEdit(product)}
+                                        style={{ width: 36, height: 36, borderRadius: 9, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#7a7d70', display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+                                        <Pencil size={15} />
+                                    </button>
+                                    <button onClick={() => setDeleteTarget(product.id)}
+                                        style={{ width: 36, height: 36, borderRadius: 9, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#7a7d70', display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
+                                        <Trash2 size={15} />
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Fila 2: categoría + precio + stock */}
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                                <span style={{ ...cs, fontSize: 12.5, fontWeight: 700, padding: '4px 12px', borderRadius: 999, textTransform: 'capitalize' }}>
+                                    {product.category}
+                                </span>
+                                <div className="flex items-center gap-3">
+                                    <span style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>
+                                        ${product.price.toLocaleString('es-AR')}
+                                    </span>
+                                    <StockPill stock={product.stock} />
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* ── DESKTOP: tabla ── */}
+            <div className="hidden md:block" style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)', borderRadius: 18, boxShadow: '0 1px 2px rgba(34,38,29,.05),0 4px 14px rgba(34,38,29,.05)', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ background: '#faf9f3', borderBottom: '1px solid rgba(34,38,29,.10)' }}>
@@ -186,7 +230,7 @@ export function AdminProducts() {
                                             <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#eceadf', flexShrink: 0, border: '1px solid rgba(34,38,29,.10)' }}>
                                                 <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
                                             </div>
-                                            <div className="truncate max-w-[140px] md:max-w-[280px]" style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
+                                            <div className="truncate max-w-[280px]" style={{ fontWeight: 700, fontSize: 14.5, color: '#22261d' }}>{product.name}</div>
                                         </div>
                                     </td>
                                     <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>

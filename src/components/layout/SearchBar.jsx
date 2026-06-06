@@ -52,7 +52,7 @@ export function MobileSearchOverlay({ value, onChange, onClose }) {
           <form onSubmit={handleSubmit}>
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"/>
-              <input ref={inputRef} type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Buscar productos..." className="w-full pl-12 pr-4 py-3 bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all"/>
+              <input ref={inputRef} type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="Buscar productos..." className="w-full pl-12 pr-4 py-3 bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#566a2f] focus:bg-white transition-all"/>
             </div>
             <button type="submit" disabled={!value.trim()} className={`w-full mt-4 py-3 rounded-xl font-semibold transition-all ${value.trim()
             ? 'bg-[#566a2f] hover:bg-[#465824] text-[#f3efe0]'

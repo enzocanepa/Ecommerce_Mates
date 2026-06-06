@@ -103,7 +103,7 @@ export function Header() {
                             />
                         ) : (
                             <Link
-                                to="/acceso"
+                                to="/login"
                                 className="inline-flex items-center gap-2 h-[42px] px-[18px] rounded-full font-bold text-sm transition-colors duration-200 active:translate-y-px"
                                 style={{ background: '#566a2f', color: '#f5f2e6' }}
                                 onMouseEnter={e => e.currentTarget.style.background = '#465824'}
@@ -244,7 +244,7 @@ export function Header() {
                         <>
                             <p style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#9a9d90', padding: '4px 14px 8px' }}>Cuenta</p>
                             <Link
-                                to="/acceso"
+                                to="/login"
                                 className="flex items-center justify-center gap-2 rounded-xl font-bold text-sm active:translate-y-px transition-all"
                                 style={{ background: '#566a2f', color: '#f5f2e6', height: 46, margin: '0 4px' }}
                                 onMouseEnter={e => e.currentTarget.style.background = '#465824'}

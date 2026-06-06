@@ -1,41 +1,82 @@
 import { Link, useNavigate } from 'react-router';
 import { Home, ShoppingBag, ArrowLeft } from 'lucide-react';
+
+const serif = "'DM Serif Display', Georgia, serif";
+
 export function NotFound() {
     const navigate = useNavigate();
-    return (<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
-        {/* 404 visual */}
-        <div className="mb-8 relative">
-          <p className="text-[10rem] font-black text-[#c7e47d] leading-none select-none">
-            404
-          </p>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-6xl" role="img" aria-label="mate">🧉</span>
-          </div>
-        </div>
+    return (
+        <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#f6f4ec' }}>
+            <div className="max-w-md w-full text-center">
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-3">
-          Página no encontrada
-        </h1>
-        <p className="text-gray-500 mb-10 leading-relaxed">
-          La página que buscás no existe o fue movida.<br />
-          Mientras tanto, tomemos un mate y volvamos a la tienda.
-        </p>
+                {/* 404 */}
+                <div className="relative flex items-center justify-center mb-6 select-none" style={{ height: 160 }}>
+                    <span
+                        style={{
+                            fontFamily: serif,
+                            fontSize: 'clamp(120px, 28vw, 160px)',
+                            lineHeight: 1,
+                            color: 'rgba(86,106,47,.13)',
+                            letterSpacing: '-4px',
+                            userSelect: 'none',
+                        }}
+                    >
+                        404
+                    </span>
+                    <span
+                        className="absolute"
+                        style={{ fontSize: 72 }}
+                        role="img"
+                        aria-label="mate"
+                    >
+                        🧉
+                    </span>
+                </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button onClick={() => navigate(-1)} className="flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-            <ArrowLeft className="w-4 h-4"/>
-            Volver atrás
-          </button>
-          <Link to="/" className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#a8c95f] hover:bg-[#97b84f] text-[#4a5f2f] font-semibold rounded-lg transition-colors">
-            <Home className="w-4 h-4"/>
-            Inicio
-          </Link>
-          <Link to="/tienda" className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#4a5f2f] hover:bg-[#3a4f22] text-white font-semibold rounded-lg transition-colors">
-            <ShoppingBag className="w-4 h-4"/>
-            Ver tienda
-          </Link>
+                <h1
+                    className="mb-3"
+                    style={{ fontFamily: serif, fontSize: 34, color: '#22261d', letterSpacing: '-.3px', lineHeight: 1.1 }}
+                >
+                    Página no encontrada
+                </h1>
+                <p style={{ color: '#6c7062', fontSize: 15, lineHeight: 1.65, marginBottom: 36 }}>
+                    La página que buscás no existe o fue movida.<br />
+                    Mientras tanto, tomemos un mate y volvamos a la tienda.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="inline-flex items-center justify-center gap-2 font-bold text-sm rounded-full transition-all duration-200 active:translate-y-px"
+                        style={{ height: 46, padding: '0 20px', background: '#fff', border: '1px solid rgba(34,38,29,.18)', color: '#22261d', cursor: 'pointer' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Volver atrás
+                    </button>
+                    <Link
+                        to="/"
+                        className="inline-flex items-center justify-center gap-2 font-bold text-sm rounded-full transition-all duration-200 active:translate-y-px"
+                        style={{ height: 46, padding: '0 20px', background: '#fff', border: '1px solid rgba(34,38,29,.18)', color: '#22261d' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#566a2f'; e.currentTarget.style.color = '#566a2f'; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#22261d'; }}
+                    >
+                        <Home className="w-4 h-4" />
+                        Inicio
+                    </Link>
+                    <Link
+                        to="/tienda"
+                        className="inline-flex items-center justify-center gap-2 font-bold text-sm rounded-full transition-all duration-200 active:translate-y-px"
+                        style={{ height: 46, padding: '0 20px', background: '#566a2f', color: '#f5f2e6', border: '1px solid transparent' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#465824'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#566a2f'}
+                    >
+                        <ShoppingBag className="w-4 h-4" />
+                        Ver tienda
+                    </Link>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>);
+    );
 }
