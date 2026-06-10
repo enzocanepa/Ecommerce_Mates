@@ -257,7 +257,7 @@ export function Shop() {
                                 Filtros
                                 {(minPrice || maxPrice) && <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: '#c06a34' }}>!</span>}
                             </button>
-                            {hasActiveFilters && (
+                            {hasActiveFilters && !minPrice && !maxPrice && (
                                 <button
                                     onClick={clearAllFilters}
                                     className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
@@ -319,8 +319,8 @@ export function Shop() {
                             )}
                         </button>
 
-                        {/* Clear all */}
-                        {hasActiveFilters && (
+                        {/* Clear all — solo cuando no hay filtro de precio activo */}
+                        {hasActiveFilters && !minPrice && !maxPrice && (
                             <button
                                 onClick={clearAllFilters}
                                 className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
@@ -338,72 +338,58 @@ export function Shop() {
                 {/* ── Price filter panel ──────────────────────── */}
                 {showFilters && (
                     <div
-                        className="rounded-2xl p-5 mb-6 flex flex-wrap gap-6 items-end"
+                        className="rounded-2xl p-5 mb-6 flex flex-wrap gap-6 justify-center"
                         style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)' }}
                     >
+                        {/* Min price */}
                         <div>
-                            <label
-                                className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2"
-                                style={{ color: '#6c7062' }}
-                            >
+                            <label className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2" style={{ color: '#6c7062' }}>
                                 Precio mínimo (ARS)
                             </label>
-                            <input
-                                type="number"
-                                value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)}
-                                placeholder="0"
-                                min={0}
-                                max={maxProductPrice}
-                                className="text-[14px] focus:outline-none transition-colors"
-                                style={{
-                                    width: '160px',
-                                    height: '40px',
-                                    padding: '0 14px',
-                                    borderRadius: '20px',
-                                    border: '1.5px solid rgba(34,38,29,.18)',
-                                    background: '#f6f4ec',
-                                    color: '#22261d',
-                                }}
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="number"
+                                    value={minPrice}
+                                    onChange={(e) => setMinPrice(e.target.value)}
+                                    placeholder="0"
+                                    min={0}
+                                    max={maxProductPrice}
+                                    className="text-[14px] focus:outline-none transition-colors"
+                                    style={{ width: '160px', height: '40px', padding: minPrice ? '0 36px 0 14px' : '0 14px', borderRadius: '20px', border: '1.5px solid rgba(34,38,29,.18)', background: '#f6f4ec', color: '#22261d' }}
+                                />
+                                {minPrice && (
+                                    <button onClick={() => setMinPrice('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9a9d90', padding: 2, display: 'flex' }}
+                                        onMouseEnter={e => e.currentTarget.style.color = '#c0392b'}
+                                        onMouseLeave={e => e.currentTarget.style.color = '#9a9d90'}>
+                                        <X className="w-3.5 h-3.5" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
+                        {/* Max price */}
                         <div>
-                            <label
-                                className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2"
-                                style={{ color: '#6c7062' }}
-                            >
+                            <label className="block text-[11.5px] font-bold tracking-[1px] uppercase mb-2" style={{ color: '#6c7062' }}>
                                 Precio máximo (ARS)
                             </label>
-                            <input
-                                type="number"
-                                value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)}
-                                placeholder={maxProductPrice.toLocaleString('es-AR')}
-                                min={0}
-                                className="text-[14px] focus:outline-none transition-colors"
-                                style={{
-                                    width: '160px',
-                                    height: '40px',
-                                    padding: '0 14px',
-                                    borderRadius: '20px',
-                                    border: '1.5px solid rgba(34,38,29,.18)',
-                                    background: '#f6f4ec',
-                                    color: '#22261d',
-                                }}
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="number"
+                                    value={maxPrice}
+                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                    placeholder={maxProductPrice.toLocaleString('es-AR')}
+                                    min={0}
+                                    className="text-[14px] focus:outline-none transition-colors"
+                                    style={{ width: '160px', height: '40px', padding: maxPrice ? '0 36px 0 14px' : '0 14px', borderRadius: '20px', border: '1.5px solid rgba(34,38,29,.18)', background: '#f6f4ec', color: '#22261d' }}
+                                />
+                                {maxPrice && (
+                                    <button onClick={() => setMaxPrice('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9a9d90', padding: 2, display: 'flex' }}
+                                        onMouseEnter={e => e.currentTarget.style.color = '#c0392b'}
+                                        onMouseLeave={e => e.currentTarget.style.color = '#9a9d90'}>
+                                        <X className="w-3.5 h-3.5" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                        {(minPrice || maxPrice) && (
-                            <button
-                                onClick={() => { setMinPrice(''); setMaxPrice(''); }}
-                                className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
-                                style={{ width: 34, height: 34, borderRadius: '50%', border: '1.5px solid rgba(34,38,29,.18)', background: '#fff', color: '#6c7062', cursor: 'pointer', alignSelf: 'flex-end' }}
-                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#6c7062'; }}
-                                title="Borrar rango de precio"
-                            >
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-                        )}
                     </div>
                 )}
 
