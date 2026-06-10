@@ -258,9 +258,15 @@ export function Shop() {
                                 {(minPrice || maxPrice) && <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: '#c06a34' }}>!</span>}
                             </button>
                             {hasActiveFilters && (
-                                <button onClick={clearAllFilters} className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-colors active:translate-y-px" style={{ color: '#6c7062' }}
-                                    onMouseEnter={e => e.currentTarget.style.color = '#22261d'} onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}>
-                                    <X className="w-4 h-4" />Limpiar
+                                <button
+                                    onClick={clearAllFilters}
+                                    className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
+                                    style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid rgba(34,38,29,.18)', background: '#fff', color: '#6c7062', cursor: 'pointer' }}
+                                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#6c7062'; }}
+                                    title="Limpiar filtros"
+                                >
+                                    <X className="w-4 h-4" />
                                 </button>
                             )}
                         </div>
@@ -317,13 +323,13 @@ export function Shop() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearAllFilters}
-                                className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold transition-colors active:translate-y-px"
-                                style={{ color: '#6c7062' }}
-                                onMouseEnter={e => e.currentTarget.style.color = '#22261d'}
-                                onMouseLeave={e => e.currentTarget.style.color = '#6c7062'}
+                                className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
+                                style={{ width: 36, height: 36, borderRadius: '50%', border: '1.5px solid rgba(34,38,29,.18)', background: '#fff', color: '#6c7062', cursor: 'pointer' }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#6c7062'; }}
+                                title="Limpiar filtros"
                             >
                                 <X className="w-4 h-4" />
-                                Limpiar
                             </button>
                         )}
                     </div>
@@ -389,12 +395,13 @@ export function Shop() {
                         {(minPrice || maxPrice) && (
                             <button
                                 onClick={() => { setMinPrice(''); setMaxPrice(''); }}
-                                className="text-[13.5px] font-semibold transition-colors active:translate-y-px"
-                                style={{ color: '#566a2f' }}
-                                onMouseEnter={e => e.currentTarget.style.color = '#465824'}
-                                onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
+                                className="inline-flex items-center justify-center transition-colors active:translate-y-px flex-shrink-0"
+                                style={{ width: 34, height: 34, borderRadius: '50%', border: '1.5px solid rgba(34,38,29,.18)', background: '#fff', color: '#6c7062', cursor: 'pointer', alignSelf: 'flex-end' }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.18)'; e.currentTarget.style.color = '#6c7062'; }}
+                                title="Borrar rango de precio"
                             >
-                                Borrar rango
+                                <X className="w-3.5 h-3.5" />
                             </button>
                         )}
                     </div>
