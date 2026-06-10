@@ -112,7 +112,7 @@
 
 /* ── Product card hover (CSS puro = igual que el diseño HTML) ── */
 .product-card {
-  transition: transform .6s cubic-bezier(.25,.8,.25,1), box-shadow .6s cubic-bezier(.25,.8,.25,1);
+  transition: transform .9s cubic-bezier(.25,.8,.25,1), box-shadow .9s cubic-bezier(.25,.8,.25,1);
   box-shadow: 0 1px 2px rgba(34,38,29,.06), 0 6px 16px rgba(34,38,29,.05);
 }
 .product-card:hover {
