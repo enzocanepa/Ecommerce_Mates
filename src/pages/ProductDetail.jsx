@@ -107,9 +107,9 @@ export function ProductDetail() {
                     <div className="grid md:grid-cols-2 gap-0">
 
                         {/* ── Image gallery ─────────────────────── */}
-                        <div className="p-6 md:p-8" style={{ borderRight: '1px solid rgba(34,38,29,.08)' }}>
+                        <div className="md:p-8" style={{ borderRight: '1px solid rgba(34,38,29,.08)' }}>
                             <div
-                                className="relative rounded-2xl overflow-hidden mb-4"
+                                className="relative md:rounded-2xl overflow-hidden mb-0 md:mb-4"
                                 style={{ aspectRatio: '1/1', background: '#eceadf' }}
                             >
                                 <img
@@ -142,7 +142,7 @@ export function ProductDetail() {
                             </div>
 
                             {productImages.length > 1 && (
-                                <div className="flex gap-2 overflow-x-auto pb-1">
+                                <div className="flex gap-2 overflow-x-auto pb-1 px-4 pt-3 md:px-0 md:pt-0">
                                     {productImages.map((img, index) => (
                                         <button
                                             key={index}
@@ -163,7 +163,7 @@ export function ProductDetail() {
                         </div>
 
                         {/* ── Product info ───────────────────────── */}
-                        <div className="p-6 md:p-8 flex flex-col">
+                        <div className="p-5 md:p-8 flex flex-col">
 
                             {/* Category + title */}
                             <div className="mb-5">
