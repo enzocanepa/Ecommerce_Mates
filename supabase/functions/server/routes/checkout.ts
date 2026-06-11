@@ -47,7 +47,7 @@ checkoutRoutes.post("/create-preference", async (c) => {
         failure: `${origin}/checkout/error`,
         pending: `${origin}/checkout/pendiente`,
       },
-      auto_return: 'approved',
+      auto_return: 'all',
       external_reference: crypto.randomUUID(),
       metadata: {
         userId: user.id,

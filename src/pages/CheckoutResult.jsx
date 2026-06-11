@@ -64,6 +64,10 @@ export function CheckoutResult() {
     const { accessToken, user } = useAuth();
     const [orderCreated, setOrderCreated] = useState(false);
     const orderAttempted = useRef(false);
+    const webhookSent = useRef(false);
+    const [displayTotal] = useState(
+        () => Number(sessionStorage.getItem('checkoutTotal') ?? 0) || totalPrice
+    );
 
     const path = location.pathname;
     let resultType = 'failure';
@@ -115,7 +119,13 @@ export function CheckoutResult() {
                         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
                         body: JSON.stringify({ cart: itemsToSave, total: totalToSave, status: orderStatus, paymentId, externalReference: externalRef }),
                     });
-                    if (res.ok) { cleanup(); return; }
+                    if (res.ok) {
+                        import('../services/n8nService').then(({ n8nService }) => {
+                            n8nService.enviarCompraExitosa(user, itemsToSave, totalToSave, paymentId || '');
+                        }).catch(() => {});
+                        cleanup();
+                        return;
+                    }
                 } catch { /* fall through */ }
             }
 
@@ -131,10 +141,23 @@ export function CheckoutResult() {
                 createdAt: new Date().toISOString(),
             };
             localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify([order, ...existing]));
+            import('../services/n8nService').then(({ n8nService }) => {
+                n8nService.enviarCompraExitosa(user, itemsToSave, totalToSave, paymentId || '');
+            }).catch(() => {});
             cleanup();
         };
 
         createOrder();
+    }, [resultType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Notify on failure
+    useEffect(() => {
+        if (resultType !== 'failure') return;
+        if (webhookSent.current) return;
+        webhookSent.current = true;
+        import('../services/n8nService').then(({ n8nService }) => {
+            n8nService.enviarCompraFallida(user, 'Pago rechazado por Mercado Pago');
+        }).catch(() => {});
     }, [resultType]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const fmt = n => '$' + Number(n).toLocaleString('es-AR');
@@ -198,7 +221,7 @@ export function CheckoutResult() {
                         {isOk && (
                             <InfoRow
                                 label="Total abonado"
-                                value={fmt(totalPrice || Number(sessionStorage.getItem('checkoutTotal') ?? 0))}
+                                value={fmt(displayTotal)}
                                 valueStyle={{ fontFamily: serif, fontWeight: 400, fontSize: 20 }}
                             />
                         )}
@@ -248,7 +271,7 @@ export function CheckoutResult() {
                             </Link>
                         ) : (
                             <button
-                                onClick={() => navigate(-1)}
+                                onClick={() => navigate('/checkout')}
                                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, height: 54, borderRadius: 13, background: '#c06a34', color: '#fff', fontWeight: 700, fontSize: 16, border: 'none', boxShadow: '0 8px 22px rgba(192,106,52,.28)', cursor: 'pointer', width: '100%', fontFamily: "'Karla', sans-serif" }}
                                 onMouseEnter={e => e.currentTarget.style.background = '#ab5b2a'}
                                 onMouseLeave={e => e.currentTarget.style.background = '#c06a34'}
