@@ -39,9 +39,24 @@ function getFallbackResponse(text) {
     }
     return 'Para consultas específicas sobre tu pedido, escribinos a aconcaguamates1@gmail.com y te respondemos a la brevedad. 📩';
 }
+const MSGS_KEY = 'chat_msgs';
+const MSGS_TS_KEY = 'chat_msgs_ts';
+const SESSION_TTL = 10 * 60 * 1000;
+
+function loadSavedMessages() {
+    try {
+        const ts = localStorage.getItem(MSGS_TS_KEY);
+        if (ts && Date.now() - Number(ts) < SESSION_TTL) {
+            const raw = localStorage.getItem(MSGS_KEY);
+            if (raw) return JSON.parse(raw);
+        }
+    } catch {}
+    return [WELCOME];
+}
+
 const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([WELCOME]);
+    const [messages, setMessages] = useState(loadSavedMessages);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
@@ -57,6 +72,13 @@ const ChatWidget = () => {
     }, [isOpen]);
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    useEffect(() => {
+        try {
+            localStorage.setItem(MSGS_KEY, JSON.stringify(messages));
+            localStorage.setItem(MSGS_TS_KEY, Date.now().toString());
+        } catch {}
     }, [messages]);
     useEffect(() => {
         if (isOpen) {
