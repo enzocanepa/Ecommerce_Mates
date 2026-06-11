@@ -6,17 +6,21 @@ const SESSION_KEY = 'mate_session'; // B-06: clave unificada
 
 const AuthContext = createContext(undefined);
 
-// M-05: verificar si el JWT expiró sin librerías externas
 // JWT usa base64url (RFC 4648) — hay que normalizar antes de atob()
-function isTokenExpired(token) {
+function decodeJwtPayload(token) {
   try {
     const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
     const padded = b64 + '='.repeat((4 - b64.length % 4) % 4);
-    const payload = JSON.parse(atob(padded));
-    return payload.exp * 1000 < Date.now();
+    return JSON.parse(atob(padded));
   } catch {
-    return true;
+    return null;
   }
+}
+
+function isTokenExpired(token) {
+  const payload = decodeJwtPayload(token);
+  if (!payload) return true;
+  return payload.exp * 1000 < Date.now();
 }
 
 function loadSession() {
@@ -96,7 +100,7 @@ export function AuthProvider({ children }) {
       signUp,
       signIn,
       signOut,
-      isAdmin: user?.role === 'admin',
+      isAdmin: accessToken ? decodeJwtPayload(accessToken)?.role === 'admin' : false,
     }}>
       {children}
     </AuthContext.Provider>

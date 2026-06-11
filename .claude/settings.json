@@ -30,14 +30,24 @@
       "Bash(git rm *)",
       "Bash(git commit *)",
       "Bash(Remove-Item \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\components\\\\product\\\\ReviewsSection.jsx\" -Force)",
-      "Bash(Remove-Item \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\services\\\\reviewService.js\" -Force)"
+      "Bash(Remove-Item \"C:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\\\\src\\\\services\\\\reviewService.js\" -Force)",
+      "Bash(mkdir -p \"/mnt/c/Users/enzoc/Desktop/auditoria_mates\" && echo \"OK\")",
+      "Bash(cd \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\" && cat \"C:\\\\Users\\\\enzoc\\\\AppData\\\\Local\\\\npm-cache\\\\_logs\\\\2026-06-11T03_57_35_249Z-debug-0.log\" 2>&1 | tail -30)",
+      "Read(//c/Users/enzoc/AppData/Local/npm-cache/_logs/**)",
+      "Bash(ls \"C:\\\\Users\\\\enzoc\\\\AppData\\\\Local\\\\npm-cache\\\\_logs\\\\\" | tail -5)",
+      "Read(//c/Users/enzoc/AppData/Local/npm-cache/**)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm run *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",
       "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\exception",
       "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\config",
       "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\java\\com\\matesaconcahua\\api\\controller",
-      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\resources"
+      "C:\\Users\\enzoc\\Desktop\\mates-aconcagua-api\\api\\api\\src\\main\\resources",
+      "\\mnt\\c\\Users\\enzoc\\Desktop",
+      "C:\\Users\\enzoc\\Desktop"
     ]
   }
 }

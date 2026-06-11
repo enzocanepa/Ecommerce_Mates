@@ -10,20 +10,6 @@ const LOCAL_PRODUCTS_KEY = 'mate_admin_products';
 const LOCAL_ORDERS_KEY = 'mate_local_orders';
 const serif = "'DM Serif Display', Georgia, serif";
 
-function decrementStock(items) {
-    try {
-        const raw = localStorage.getItem(LOCAL_PRODUCTS_KEY);
-        if (!raw) return;
-        const products = JSON.parse(raw);
-        if (!Array.isArray(products)) return;
-        const updated = products.map((p) => {
-            const ordered = items.find((i) => i.id === p.id);
-            if (!ordered) return p;
-            return { ...p, stock: Math.max(0, (p.stock ?? 0) - ordered.quantity) };
-        });
-        localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(updated));
-    } catch { /* ignore */ }
-}
 
 /* ── Pulsing ring animation ── */
 const pulseStyle = `
@@ -145,14 +131,6 @@ export function CheckoutResult() {
                 createdAt: new Date().toISOString(),
             };
             localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify([order, ...existing]));
-            decrementStock(itemsToSave);
-
-            if (user?.email) {
-                toast.success(`📧 Email de confirmación enviado a ${user.email}`, {
-                    description: `Pedido #${order.id.slice(0, 8)} — $${totalToSave.toLocaleString('es-AR')} ARS`,
-                    duration: 6000,
-                });
-            }
             cleanup();
         };
 

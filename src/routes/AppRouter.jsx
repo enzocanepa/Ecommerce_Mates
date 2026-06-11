@@ -20,9 +20,16 @@ const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard').then(m
 const AdminProducts = lazy(() => import('../pages/admin/AdminProducts').then(m => ({ default: m.AdminProducts })));
 const AdminOrders = lazy(() => import('../pages/admin/AdminOrders').then(m => ({ default: m.AdminOrders })));
 function LazyPage({ children }) {
-    return (<Suspense fallback={<div style={{ minHeight: '60vh' }}/>}>
-      {children}
-    </Suspense>);
+    return (
+        <Suspense fallback={
+            <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid #eef0e3', borderTopColor: '#566a2f', animation: 'spin 0.7s linear infinite' }} />
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        }>
+            {children}
+        </Suspense>
+    );
 }
 export const router = createBrowserRouter([
     {

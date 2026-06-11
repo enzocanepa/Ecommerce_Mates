@@ -69,7 +69,7 @@ export function CartProvider({ children }) {
     }, [cart, initialized, user, accessToken]);
 
     // ── Acciones ──────────────────────────────────────────────────────────────
-    const addToCart = (product, quantity = 1) => {
+    const addToCart = useCallback((product, quantity = 1) => {
         const item = {
             id:       product.id,
             name:     product.name,
@@ -80,10 +80,10 @@ export function CartProvider({ children }) {
         };
         setCart(prev => {
             const existing = prev.find(i => i.id === item.id);
-            const newCart = existing 
+            const newCart = existing
                 ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i)
                 : [...prev, { ...item, quantity }];
-                
+
             // B-03: debounce del webhook de carrito abandonado (15 min de inactividad)
             if (user) {
                 clearTimeout(abandonedCartTimer.current);
@@ -94,43 +94,40 @@ export function CartProvider({ children }) {
                     }).catch(err => console.error(err));
                 }, ABANDONED_CART_DELAY);
             }
-            
+
             return newCart;
         });
-    };
+    }, [user]);
 
-    const removeFromCart = productId => setCart(prev => prev.filter(i => i.id !== productId));
+    const removeFromCart = useCallback(productId => setCart(prev => prev.filter(i => i.id !== productId)), []);
 
-    const updateQuantity = (productId, quantity) => {
-        if (quantity <= 0) { removeFromCart(productId); return; }
+    const updateQuantity = useCallback((productId, quantity) => {
+        if (quantity <= 0) { setCart(prev => prev.filter(i => i.id !== productId)); return; }
         setCart(prev => prev.map(i => i.id === productId ? { ...i, quantity } : i));
-    };
+    }, []);
 
-    const clearCart = () => setCart([]);
+    const clearCart = useCallback(() => setCart([]), []);
 
-    const checkout = async () => {
+    const checkout = useCallback(async () => {
         if (!user)        throw new Error('Debes iniciar sesión para realizar una compra');
         if (!accessToken) throw new Error('No hay token de autenticación');
         try {
             const { orderService } = await import('../services/orderService');
-            // A-04: calcular total localmente para evitar usar el valor del render anterior
             const currentTotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
             const res = await orderService.createOrder(cart, currentTotal, accessToken);
-            
-            // N8N Webhook: Compra Exitosa
+
             import('../services/n8nService').then(({ n8nService }) => {
-                n8nService.enviarCompraExitosa(user, cart, totalPrice, res?.id || '');
+                n8nService.enviarCompraExitosa(user, cart, currentTotal, res?.id || '');
             }).catch(err => console.error(err));
-            
+
             clearCart();
         } catch (error) {
-            // N8N Webhook: Compra Fallida
             import('../services/n8nService').then(({ n8nService }) => {
                 n8nService.enviarCompraFallida(user, error.message);
             }).catch(err => console.error(err));
             throw error;
         }
-    };
+    }, [user, accessToken, cart, clearCart]);
 
     const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
     const totalPrice = cart.reduce((s, i) => s + i.price * i.quantity, 0);

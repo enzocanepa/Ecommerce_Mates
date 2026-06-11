@@ -140,9 +140,7 @@ export function Checkout() {
             if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
             window.location.href = data.init_point;
         } catch (err) {
-            const isNetwork = err instanceof TypeError || err.message === 'Failed to fetch';
-            if (isNetwork) { navigate('/checkout/exito?simulated=true'); return; }
-            setApiError(err.message);
+            setApiError(err.message || 'Error al conectar con el servidor. Por favor, intentá de nuevo.');
         } finally {
             setLoading(false);
         }

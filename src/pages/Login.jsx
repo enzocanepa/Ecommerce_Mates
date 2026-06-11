@@ -156,9 +156,9 @@ export function Login() {
                                 <input type="checkbox" className="w-[17px] h-[17px] cursor-pointer" style={{ accentColor: '#566a2f' }} />
                                 Recordarme
                             </label>
-                            <span className="text-[13.5px] font-bold" style={{ color: '#566a2f' }}>
+                            <a href="mailto:lorenzocona14@gmail.com" className="text-[13.5px] font-bold transition-colors" style={{ color: '#566a2f' }}>
                                 ¿Olvidaste tu contraseña?
-                            </span>
+                            </a>
                         </div>
 
                         {/* Submit */}

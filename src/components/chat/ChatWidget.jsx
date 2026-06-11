@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Send, X, MessageCircle, Bot, User } from 'lucide-react';
 const WELCOME = {
     id: 'welcome',
@@ -98,7 +99,7 @@ const ChatWidget = () => {
             const sessionId = localStorage.getItem('chat_session') || `sess_${Date.now()}`;
             localStorage.setItem('chat_session', sessionId);
 
-            const res = await fetch('https://n8n.66.94.104.64.nip.io/webhook/chat-ecommerce', {
+            const res = await fetch(import.meta.env.VITE_N8N_CHAT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -138,9 +139,9 @@ const ChatWidget = () => {
     };
 
     const formatBotMessage = (content) => {
-        return content
-            .replace(/\n/g, '<br/>')
-            .replace(/<a /g, '<a style="color:#4a5f2f;text-decoration:underline;font-weight:600;" ');
+        const withBreaks = content.replace(/\n/g, '<br/>');
+        const sanitized = DOMPurify.sanitize(withBreaks, { ALLOWED_TAGS: ['br', 'a', 'b', 'strong', 'em'], ALLOWED_ATTR: ['href', 'target', 'rel'] });
+        return sanitized.replace(/<a /g, '<a style="color:#4a5f2f;text-decoration:underline;font-weight:600;" rel="noopener noreferrer" target="_blank" ');
     };
 
     return (
