@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, X, Search, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Search, Check, Image } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProducts } from '../../context/ProductsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -21,20 +21,27 @@ const CAT_STYLE = {
     accesorios: { bg: '#efe6f1', color: '#7a5288' },
 };
 
+// imagesInput: [{ url: string, variantName: string }]
 const EMPTY_FORM = {
     name: '', description: '', fullDescription: '',
-    price: 0, image: '', category: 'mates', stock: 0, variantsInput: '',
+    price: 0, category: 'mates', stock: 0,
+    imagesInput: [{ url: '', variantName: '' }],
 };
 
 function toFormData(p) {
-    return { ...p, variantsInput: (p.variants ?? []).map(v => (typeof v === 'string' ? v : v.name)).join(', ') };
+    const imgs = p.images?.length
+        ? p.images.map(img => ({ url: typeof img === 'string' ? img : img.url, variantName: img.variantName ?? '' }))
+        : [{ url: p.image ?? '', variantName: '' }];
+    return { ...p, imagesInput: imgs };
 }
 
 function fromFormData(f) {
-    const { variantsInput, variants: _v, images: _i, ...rest } = f;
-    const variants = variantsInput.split(',').map(v => v.trim()).filter(Boolean).map(name => ({ name }));
-    const images = rest.image ? [{ url: rest.image, position: 0 }] : [];
-    return { ...rest, variants, images };
+    const { imagesInput, variants: _v, images: _i, image: _img, variantsInput: _vi, ...rest } = f;
+    const validImgs = (imagesInput ?? []).filter(i => i.url.trim());
+    const images = validImgs.map((i, idx) => ({ url: i.url.trim(), position: idx, variantName: i.variantName.trim() || null }));
+    const variants = validImgs.filter(i => i.variantName.trim()).map(i => ({ name: i.variantName.trim() }));
+    const image = validImgs[0]?.url ?? '';
+    return { ...rest, image, images, variants };
 }
 
 function StockPill({ stock }) {
@@ -88,11 +95,21 @@ export function AdminProducts() {
     function closeModal() { setModalOpen(false); setEditingId(null); setError(''); }
     function set(field, value) { setForm(prev => ({ ...prev, [field]: value })); }
 
+    function setImg(idx, key, value) {
+        setForm(prev => {
+            const imgs = [...(prev.imagesInput ?? [])];
+            imgs[idx] = { ...imgs[idx], [key]: value };
+            return { ...prev, imagesInput: imgs };
+        });
+    }
+    function addImg()    { setForm(prev => ({ ...prev, imagesInput: [...(prev.imagesInput ?? []), { url: '', variantName: '' }] })); }
+    function removeImg(idx) { setForm(prev => ({ ...prev, imagesInput: (prev.imagesInput ?? []).filter((_, i) => i !== idx) })); }
+
     async function handleSave() {
         setError('');
-        if (!form.name.trim())  return setError('El nombre es obligatorio.');
-        if (form.price <= 0)    return setError('El precio debe ser mayor a 0.');
-        if (!form.image.trim()) return setError('La imagen es obligatoria.');
+        if (!form.name.trim()) return setError('El nombre es obligatorio.');
+        if (form.price <= 0)   return setError('El precio debe ser mayor a 0.');
+        if (!(form.imagesInput ?? []).some(i => i.url.trim())) return setError('Agregá al menos una imagen.');
         setSaving(true);
         try {
             const data = fromFormData(form);
@@ -357,12 +374,6 @@ export function AdminProducts() {
                                         style={getInputStyle('stock')}
                                         onFocus={() => setFocusedField('stock')} onBlur={() => setFocusedField('')} />
                                 </Field>
-                                <Field label="Variantes" optional>
-                                    <input type="text" value={form.variantsInput} onChange={e => set('variantsInput', e.target.value)}
-                                        placeholder="Natural, Con virola, Premium"
-                                        style={getInputStyle('var')}
-                                        onFocus={() => setFocusedField('var')} onBlur={() => setFocusedField('')} />
-                                </Field>
                             </div>
 
                             <Field label="Descripción corta">
@@ -379,17 +390,60 @@ export function AdminProducts() {
                                     onFocus={() => setFocusedField('fdesc')} onBlur={() => setFocusedField('')} />
                             </Field>
 
-                            <Field label="URL de imagen" required>
-                                <input type="url" value={form.image} onChange={e => set('image', e.target.value)}
-                                    placeholder="https://…"
-                                    style={getInputStyle('img')}
-                                    onFocus={() => setFocusedField('img')} onBlur={() => setFocusedField('')} />
-                                {form.image && (
-                                    <div style={{ marginTop: 12, width: 84, height: 84, borderRadius: 12, overflow: 'hidden', background: '#eceadf', border: '1px solid rgba(34,38,29,.10)' }}>
-                                        <img src={form.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
-                                    </div>
-                                )}
-                            </Field>
+                            {/* ── Imágenes y variantes ── */}
+                            <div>
+                                <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+                                    <label style={{ fontSize: 13, fontWeight: 700, color: '#22261d' }}>
+                                        Imágenes <span style={{ color: '#c06a34' }}>*</span>
+                                        <span style={{ fontWeight: 500, color: '#7a7d70', fontSize: 12, marginLeft: 6 }}>
+                                            (la "Variante" vincula la imagen al botón de variante)
+                                        </span>
+                                    </label>
+                                    <button type="button" onClick={addImg}
+                                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 8, border: '1.5px solid #566a2f', background: '#eef0e3', color: '#465824', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+                                        <Plus size={14} /> Agregar imagen
+                                    </button>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                    {(form.imagesInput ?? []).map((img, idx) => (
+                                        <div key={idx} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                                            {/* Preview */}
+                                            <div style={{ width: 52, height: 52, borderRadius: 10, overflow: 'hidden', background: '#eceadf', border: '1px solid rgba(34,38,29,.10)', flexShrink: 0 }}>
+                                                {img.url ? (
+                                                    <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                                                ) : (
+                                                    <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: '#c4bfb0' }}><Image size={20} /></div>
+                                                )}
+                                            </div>
+                                            {/* URL */}
+                                            <div style={{ flex: 2, minWidth: 0 }}>
+                                                <input type="url" value={img.url} onChange={e => setImg(idx, 'url', e.target.value)}
+                                                    placeholder="URL de imagen (https://…)"
+                                                    style={{ ...inputCls, fontSize: 13.5 }}
+                                                    onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
+                                                    onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
+                                            </div>
+                                            {/* Variant name */}
+                                            <div style={{ flex: 1, minWidth: 90 }}>
+                                                <input type="text" value={img.variantName} onChange={e => setImg(idx, 'variantName', e.target.value)}
+                                                    placeholder="Variante (ej: Negro)"
+                                                    style={{ ...inputCls, fontSize: 13.5 }}
+                                                    onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
+                                                    onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
+                                            </div>
+                                            {/* Remove */}
+                                            {(form.imagesInput ?? []).length > 1 && (
+                                                <button type="button" onClick={() => removeImg(idx)}
+                                                    style={{ width: 38, height: 46, borderRadius: 10, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#9a9d90', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}
+                                                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
+                                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#9a9d90'; }}>
+                                                    <X size={15} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Modal footer */}

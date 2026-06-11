@@ -44,9 +44,12 @@ export function ProductDetail() {
         );
     }
 
-    const productImages = (product.images?.length ? product.images : [product.image])
-        .map(img => typeof img === 'string' ? img : img.url)
-        .filter(Boolean);
+    const productImages = (product.images?.length ? product.images : [{ url: product.image }])
+        .filter(img => (typeof img === 'string' ? img : img.url));
+
+    const productImagesWithMeta = productImages.map(img =>
+        typeof img === 'string' ? { url: img, variantName: null } : { url: img.url, variantName: img.variantName ?? null }
+    );
     const maxStock = product.stock ?? 99;
 
     const handleAddToCart = () => {
@@ -113,14 +116,14 @@ export function ProductDetail() {
                                 style={{ aspectRatio: '1/1', background: '#eceadf' }}
                             >
                                 <img
-                                    src={productImages[currentImageIndex]}
+                                    src={productImagesWithMeta[currentImageIndex]?.url}
                                     alt={`${product.name} - imagen ${currentImageIndex + 1}`}
                                     className="w-full h-full object-cover"
                                 />
-                                {productImages.length > 1 && (
+                                {productImagesWithMeta.length > 1 && (
                                     <>
                                         <button
-                                            onClick={() => setCurrentImageIndex(i => (i - 1 + productImages.length) % productImages.length)}
+                                            onClick={() => setCurrentImageIndex(i => (i - 1 + productImagesWithMeta.length) % productImagesWithMeta.length)}
                                             className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center transition-all"
                                             style={{ background: 'rgba(255,255,255,.85)', border: 'none', cursor: 'pointer' }}
                                             onMouseEnter={e => e.currentTarget.style.background = '#fff'}
@@ -129,7 +132,7 @@ export function ProductDetail() {
                                             <ChevronLeft className="w-5 h-5" />
                                         </button>
                                         <button
-                                            onClick={() => setCurrentImageIndex(i => (i + 1) % productImages.length)}
+                                            onClick={() => setCurrentImageIndex(i => (i + 1) % productImagesWithMeta.length)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center transition-all"
                                             style={{ background: 'rgba(255,255,255,.85)', border: 'none', cursor: 'pointer' }}
                                             onMouseEnter={e => e.currentTarget.style.background = '#fff'}
@@ -141,21 +144,19 @@ export function ProductDetail() {
                                 )}
                             </div>
 
-                            {productImages.length > 1 && (
+                            {productImagesWithMeta.length > 1 && (
                                 <div className="flex gap-2 overflow-x-auto pb-1 px-4 pt-3 md:px-0 md:pt-0">
-                                    {productImages.map((img, index) => (
+                                    {productImagesWithMeta.map((img, index) => (
                                         <button
                                             key={index}
                                             onClick={() => setCurrentImageIndex(index)}
                                             className="flex-shrink-0 w-[72px] h-[72px] rounded-xl overflow-hidden transition-all"
                                             style={{
                                                 border: `2px solid ${currentImageIndex === index ? '#566a2f' : 'rgba(34,38,29,.12)'}`,
-                                                background: 'none',
-                                                padding: 0,
-                                                cursor: 'pointer',
+                                                background: 'none', padding: 0, cursor: 'pointer',
                                             }}
                                         >
-                                            <img src={img} alt={`Miniatura ${index + 1}`} className="w-full h-full object-cover" />
+                                            <img src={img.url} alt={img.variantName ?? `Miniatura ${index + 1}`} className="w-full h-full object-cover" />
                                         </button>
                                     ))}
                                 </div>
@@ -209,7 +210,11 @@ export function ProductDetail() {
                                             return (
                                                 <button
                                                     key={label}
-                                                    onClick={() => setSelectedVariant(label)}
+                                                    onClick={() => {
+                                                        setSelectedVariant(label);
+                                                        const imgIdx = productImagesWithMeta.findIndex(img => img.variantName === label);
+                                                        if (imgIdx !== -1) setCurrentImageIndex(imgIdx);
+                                                    }}
                                                     className="text-[13.5px] font-semibold transition-all duration-200"
                                                     style={{
                                                         height: '38px', padding: '0 16px',
