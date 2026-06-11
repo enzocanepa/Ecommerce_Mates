@@ -65,8 +65,12 @@ export function CheckoutResult() {
     const [orderCreated, setOrderCreated] = useState(false);
     const orderAttempted = useRef(false);
     const webhookSent = useRef(false);
+    const successWebhookSent = useRef(false);
     const [displayTotal] = useState(
         () => Number(sessionStorage.getItem('checkoutTotal') ?? 0) || totalPrice
+    );
+    const [savedItems] = useState(
+        () => JSON.parse(sessionStorage.getItem('checkoutCart') ?? '[]')
     );
 
     const path = location.pathname;
@@ -119,13 +123,7 @@ export function CheckoutResult() {
                         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
                         body: JSON.stringify({ cart: itemsToSave, total: totalToSave, status: orderStatus, paymentId, externalReference: externalRef }),
                     });
-                    if (res.ok) {
-                        import('../services/n8nService').then(({ n8nService }) => {
-                            n8nService.enviarCompraExitosa(user, itemsToSave, totalToSave, paymentId || '');
-                        }).catch(() => {});
-                        cleanup();
-                        return;
-                    }
+                    if (res.ok) { cleanup(); return; }
                 } catch { /* fall through */ }
             }
 
@@ -141,14 +139,22 @@ export function CheckoutResult() {
                 createdAt: new Date().toISOString(),
             };
             localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify([order, ...existing]));
-            import('../services/n8nService').then(({ n8nService }) => {
-                n8nService.enviarCompraExitosa(user, itemsToSave, totalToSave, paymentId || '');
-            }).catch(() => {});
             cleanup();
         };
 
         createOrder();
     }, [resultType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Notify on success — waits for user to load after MP redirect
+    useEffect(() => {
+        if (resultType === 'failure') return;
+        if (successWebhookSent.current) return;
+        if (!user) return;
+        successWebhookSent.current = true;
+        import('../services/n8nService').then(({ n8nService }) => {
+            n8nService.enviarCompraExitosa(user, savedItems, displayTotal, paymentId || '');
+        }).catch(() => {});
+    }, [resultType, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Notify on failure
     useEffect(() => {
