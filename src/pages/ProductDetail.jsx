@@ -108,10 +108,10 @@ export function ProductDetail() {
                     className="rounded-3xl overflow-hidden mb-12"
                     style={{ background: '#fff', border: '1px solid rgba(34,38,29,.10)' }}
                 >
-                    <div className="grid md:grid-cols-2 gap-0">
+                    <div className="grid md:grid-cols-[58%_42%] gap-0">
 
                         {/* ── Image gallery ─────────────────────── */}
-                        <div className="md:p-8" style={{ borderRight: '1px solid rgba(34,38,29,.08)' }}>
+                        <div className="md:p-5" style={{ borderRight: '1px solid rgba(34,38,29,.08)' }}>
                             <div
                                 className="relative md:rounded-2xl overflow-hidden mb-0 md:mb-4"
                                 style={{ aspectRatio: '1/1', background: '#eceadf' }}
