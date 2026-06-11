@@ -146,15 +146,27 @@ export function CheckoutResult() {
     }, [resultType]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Notify on success — waits for user to load after MP redirect
-    useEffect(() => {
-        if (resultType === 'failure') return;
+useEffect(() => {
+    if (resultType === 'failure') return;
+    if (successWebhookSent.current) return;
+
+    // Esperamos hasta 5 segundos a que el user cargue
+    const tryDispatch = (attemptsLeft) => {
         if (successWebhookSent.current) return;
-        if (!user) return;
+        if (!user) {
+            if (attemptsLeft > 0) {
+                setTimeout(() => tryDispatch(attemptsLeft - 1), 500);
+            }
+            return;
+        }
         successWebhookSent.current = true;
         import('../services/n8nService').then(({ n8nService }) => {
             n8nService.enviarCompraExitosa(user, savedItems, displayTotal, paymentId || '');
         }).catch(() => {});
-    }, [resultType, user]); // eslint-disable-line react-hooks/exhaustive-deps
+    };
+
+    tryDispatch(10); // 10 intentos × 500ms = 5 segundos máximo
+}, [resultType, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Notify on failure
     useEffect(() => {
