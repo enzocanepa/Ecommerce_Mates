@@ -115,6 +115,12 @@ const ChatWidget = () => {
         }
     };
 
+    const formatBotMessage = (content) => {
+        return content
+            .replace(/\n/g, '<br/>')
+            .replace(/<a /g, '<a style="color:#4a5f2f;text-decoration:underline;font-weight:600;" ');
+    };
+
     return (
       <div className="fixed bottom-6 right-6 z-[9999] font-sans" ref={widgetRef}>
         {/* Chat window */}
@@ -137,18 +143,25 @@ const ChatWidget = () => {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
-          {messages.map((msg) => (<div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-[#c7e47d]' : 'bg-[#4a5f2f]'}`}>
                 {msg.role === 'user'
-                ? <User className="w-3.5 h-3.5 text-[#4a5f2f]"/>
-                : <Bot className="w-3.5 h-3.5 text-white"/>}
+                  ? <User className="w-3.5 h-3.5 text-[#4a5f2f]"/>
+                  : <Bot className="w-3.5 h-3.5 text-white"/>}
               </div>
-              <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                ? 'bg-[#a8c95f] text-[#2d3e1a] rounded-tr-sm'
-                : 'bg-white text-gray-800 shadow-sm rounded-tl-sm'}`}>
-                {msg.content}
-              </div>
-            </div>))}
+              {msg.role === 'assistant' ? (
+                <div
+                  className="max-w-[78%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed bg-white text-gray-800 shadow-sm"
+                  dangerouslySetInnerHTML={{ __html: formatBotMessage(msg.content) }}
+                />
+              ) : (
+                <div className="max-w-[78%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed bg-[#a8c95f] text-[#2d3e1a]">
+                  {msg.content}
+                </div>
+              )}
+            </div>
+          ))}
 
           {loading && (<div className="flex gap-2 flex-row">
               <div className="w-7 h-7 rounded-full bg-[#4a5f2f] flex items-center justify-center flex-shrink-0 mt-0.5">
