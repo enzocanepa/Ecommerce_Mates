@@ -23,7 +23,7 @@ function getFallbackResponse(text) {
         return 'Aceptamos Mercado Pago: podés pagar con tarjeta de crédito, débito o saldo en cuenta MP. El proceso es 100% seguro. 💳';
     }
     if (t.includes('devoluci') || t.includes('cambio') || t.includes('devolver') || t.includes('retorno')) {
-        return 'Tenés 30 días corridos desde que recibís tu pedido para hacer devoluciones o cambios. El producto debe estar en buen estado y sin uso. Escribinos a aconcaguamates1@gmail.com 📬';
+        return 'Tenés 30 días corridos desde que recibís tu pedido para hacer devoluciones o cambios. El producto debe estar en buen estado y sin uso. Escribinos a lorenzocona14@gmail.com 📬';
     }
     if (t.includes('precio') || t.includes('cuesta') || t.includes('cuánto vale') || t.includes('cuanto vale') || t.includes('valor')) {
         return 'Los precios van de $1.100 a $15.000 ARS según tipo y material. Mates desde $1.100, bombillas desde $1.800, yerbas premium desde $1.100. ¡Explorá el catálogo! 🛒';
@@ -37,7 +37,7 @@ function getFallbackResponse(text) {
     if (t.includes('hola') || t.includes('buenas') || t.includes('buen dia') || t.includes('buenas tardes') || t.includes('buenas noches')) {
         return '¡Hola! ¿En qué te puedo ayudar? Podés preguntarme sobre productos, envíos, pagos o cómo cuidar tu mate. 🧉';
     }
-    return 'Para consultas específicas sobre tu pedido, escribinos a aconcaguamates1@gmail.com y te respondemos a la brevedad. 📩';
+    return 'Para consultas específicas sobre tu pedido, escribinos a lorenzocona14@gmail.com y te respondemos a la brevedad. 📩';
 }
 const MSGS_KEY = 'chat_msgs';
 const MSGS_TS_KEY = 'chat_msgs_ts';

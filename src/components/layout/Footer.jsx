@@ -52,12 +52,12 @@ export function Footer() {
                     <ul className="flex flex-col">
                         <li className="flex gap-2.5 mb-3" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4b78f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
-                            <a href="mailto:aconcaguamates1@gmail.com"
+                            <a href="mailto:lorenzocona14@gmail.com"
                                 style={{ color: 'rgba(231,230,214,.82)', transition: 'color .2s' }}
                                 onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                                 onMouseLeave={e => e.currentTarget.style.color = 'rgba(231,230,214,.82)'}
                             >
-                                aconcaguamates1@gmail.com
+                                lorenzocona14@gmail.com
                             </a>
                         </li>
                         <li className="flex gap-2.5 mb-3" style={{ fontSize: '14px', color: 'rgba(231,230,214,.82)', lineHeight: 1.45 }}>
