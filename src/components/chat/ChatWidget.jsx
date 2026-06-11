@@ -99,7 +99,7 @@ const ChatWidget = () => {
             const sessionId = localStorage.getItem('chat_session') || `sess_${Date.now()}`;
             localStorage.setItem('chat_session', sessionId);
 
-            const res = await fetch('https://n8n.66.94.104.64.nip.io/webhook/chat-ecommerce',  {
+            const res = await fetch(import.meta.env.VITE_N8N_CHAT_URL,  {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
