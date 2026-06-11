@@ -23,6 +23,7 @@ export function ProductDetail() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [selectedVariant, setSelectedVariant]     = useState('');
     const [quantity, setQuantity]                   = useState(1);
+    const [descExpanded, setDescExpanded]           = useState(false);
 
     const product = products.find(p => p.id === Number(id));
 
@@ -234,14 +235,41 @@ export function ProductDetail() {
                             )}
 
                             {/* Description */}
-                            <div className="mb-7">
-                                <p className="text-[13px] font-bold tracking-[1px] uppercase mb-2" style={{ color: '#6c7062' }}>
-                                    Descripción
-                                </p>
-                                <p className="text-[15px] leading-[1.7]" style={{ color: '#3f443a' }}>
-                                    {product.fullDescription || product.description}
-                                </p>
-                            </div>
+                            {(product.description || product.fullDescription) && (
+                                <div className="mb-7">
+                                    <p className="text-[13px] font-bold tracking-[1px] uppercase mb-2" style={{ color: '#6c7062' }}>
+                                        Descripción
+                                    </p>
+                                    {/* Mobile: short desc + leer más */}
+                                    <div className="md:hidden">
+                                        <p className="text-[15px] leading-[1.7]" style={{ color: '#3f443a' }}>
+                                            {product.description}
+                                        </p>
+                                        {product.fullDescription && product.fullDescription !== product.description && (
+                                            <>
+                                                {descExpanded && (
+                                                    <p className="text-[15px] leading-[1.7] mt-2" style={{ color: '#3f443a' }}>
+                                                        {product.fullDescription}
+                                                    </p>
+                                                )}
+                                                <button
+                                                    onClick={() => setDescExpanded(v => !v)}
+                                                    className="text-[13.5px] font-bold mt-2 transition-colors"
+                                                    style={{ background: 'none', border: 'none', color: '#566a2f', cursor: 'pointer', padding: 0 }}
+                                                    onMouseEnter={e => e.currentTarget.style.color = '#465824'}
+                                                    onMouseLeave={e => e.currentTarget.style.color = '#566a2f'}
+                                                >
+                                                    {descExpanded ? 'Leer menos ↑' : 'Leer más ↓'}
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* Desktop: full description always visible */}
+                                    <p className="hidden md:block text-[15px] leading-[1.7]" style={{ color: '#3f443a' }}>
+                                        {product.fullDescription || product.description}
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Quantity + Add to cart */}
                             <div className="mt-auto">
