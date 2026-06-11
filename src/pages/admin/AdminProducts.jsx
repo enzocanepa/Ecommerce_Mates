@@ -392,54 +392,54 @@ export function AdminProducts() {
 
                             {/* ── Imágenes y variantes ── */}
                             <div>
-                                <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
-                                    <label style={{ fontSize: 13, fontWeight: 700, color: '#22261d' }}>
+                                <div style={{ marginBottom: 10 }}>
+                                    <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#22261d', marginBottom: 3 }}>
                                         Imágenes <span style={{ color: '#c06a34' }}>*</span>
-                                        <span style={{ fontWeight: 500, color: '#7a7d70', fontSize: 12, marginLeft: 6 }}>
-                                            (la "Variante" vincula la imagen al botón de variante)
-                                        </span>
                                     </label>
+                                    <p style={{ fontSize: 12, color: '#7a7d70', marginBottom: 10 }}>
+                                        El campo "Variante" vincula la imagen al botón de variante en el producto.
+                                    </p>
                                     <button type="button" onClick={addImg}
-                                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 8, border: '1.5px solid #566a2f', background: '#eef0e3', color: '#465824', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
-                                        <Plus size={14} /> Agregar imagen
+                                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 38, padding: '0 16px', borderRadius: 9, border: '1.5px solid #566a2f', background: '#eef0e3', color: '#465824', fontWeight: 700, fontSize: 13.5, cursor: 'pointer', width: '100%', justifyContent: 'center' }}>
+                                        <Plus size={15} /> Agregar imagen
                                     </button>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                                     {(form.imagesInput ?? []).map((img, idx) => (
-                                        <div key={idx} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                                            {/* Preview */}
-                                            <div style={{ width: 52, height: 52, borderRadius: 10, overflow: 'hidden', background: '#eceadf', border: '1px solid rgba(34,38,29,.10)', flexShrink: 0 }}>
-                                                {img.url ? (
-                                                    <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
-                                                ) : (
-                                                    <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: '#c4bfb0' }}><Image size={20} /></div>
+                                        <div key={idx} style={{ background: '#faf9f3', border: '1px solid rgba(34,38,29,.10)', borderRadius: 12, padding: '12px 12px 12px 12px' }}>
+                                            {/* Top row: preview + X */}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                                                <div style={{ width: 48, height: 48, borderRadius: 9, overflow: 'hidden', background: '#eceadf', border: '1px solid rgba(34,38,29,.10)', flexShrink: 0 }}>
+                                                    {img.url ? (
+                                                        <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                                                    ) : (
+                                                        <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: '#c4bfb0' }}><Image size={18} /></div>
+                                                    )}
+                                                </div>
+                                                <span style={{ fontSize: 13, fontWeight: 600, color: '#6c7062', flex: 1 }}>
+                                                    Imagen {idx + 1}{idx === 0 ? ' (principal)' : ''}
+                                                </span>
+                                                {(form.imagesInput ?? []).length > 1 && (
+                                                    <button type="button" onClick={() => removeImg(idx)}
+                                                        style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#9a9d90', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}
+                                                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
+                                                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#9a9d90'; }}>
+                                                        <X size={14} />
+                                                    </button>
                                                 )}
                                             </div>
-                                            {/* URL */}
-                                            <div style={{ flex: 2, minWidth: 0 }}>
-                                                <input type="url" value={img.url} onChange={e => setImg(idx, 'url', e.target.value)}
-                                                    placeholder="URL de imagen (https://…)"
-                                                    style={{ ...inputCls, fontSize: 13.5 }}
-                                                    onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
-                                                    onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
-                                            </div>
-                                            {/* Variant name */}
-                                            <div style={{ flex: 1, minWidth: 90 }}>
-                                                <input type="text" value={img.variantName} onChange={e => setImg(idx, 'variantName', e.target.value)}
-                                                    placeholder="Variante (ej: Negro)"
-                                                    style={{ ...inputCls, fontSize: 13.5 }}
-                                                    onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
-                                                    onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
-                                            </div>
-                                            {/* Remove */}
-                                            {(form.imagesInput ?? []).length > 1 && (
-                                                <button type="button" onClick={() => removeImg(idx)}
-                                                    style={{ width: 38, height: 46, borderRadius: 10, border: '1px solid rgba(34,38,29,.12)', background: '#fff', color: '#9a9d90', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}
-                                                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#c0392b'; e.currentTarget.style.color = '#c0392b'; }}
-                                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,38,29,.12)'; e.currentTarget.style.color = '#9a9d90'; }}>
-                                                    <X size={15} />
-                                                </button>
-                                            )}
+                                            {/* URL input */}
+                                            <input type="url" value={img.url} onChange={e => setImg(idx, 'url', e.target.value)}
+                                                placeholder="URL de imagen (https://…)"
+                                                style={{ ...inputCls, fontSize: 13.5, marginBottom: 8 }}
+                                                onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
+                                                onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
+                                            {/* Variant input */}
+                                            <input type="text" value={img.variantName} onChange={e => setImg(idx, 'variantName', e.target.value)}
+                                                placeholder="Variante opcional (ej: Negro, Blanco)"
+                                                style={{ ...inputCls, fontSize: 13.5 }}
+                                                onFocus={e => { e.target.style.borderColor = '#566a2f'; e.target.style.boxShadow = '0 0 0 4px rgba(86,106,47,.12)'; }}
+                                                onBlur={e => { e.target.style.borderColor = 'rgba(34,38,29,.12)'; e.target.style.boxShadow = 'none'; }} />
                                         </div>
                                     ))}
                                 </div>
