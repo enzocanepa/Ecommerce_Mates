@@ -156,9 +156,15 @@ export function Login() {
                                 <input type="checkbox" className="w-[17px] h-[17px] cursor-pointer" style={{ accentColor: '#566a2f' }} />
                                 Recordarme
                             </label>
-                            <a href="mailto:lorenzocona14@gmail.com" className="text-[13.5px] font-bold transition-colors" style={{ color: '#566a2f' }}>
+                            <Link
+                                to="/recuperar-contrasena"
+                                className="text-[13.5px] font-bold transition-colors"
+                                style={{ color: '#566a2f' }}
+                                onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                                onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
+                            >
                                 ¿Olvidaste tu contraseña?
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Submit */}

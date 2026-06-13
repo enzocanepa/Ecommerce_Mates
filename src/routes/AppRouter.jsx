@@ -6,6 +6,7 @@ import { Home } from '../pages/Home';
 import { Shop } from '../pages/Shop';
 import { Login } from '../pages/Login';
 import { Signup } from '../pages/Signup';
+import { ForgotPassword } from '../pages/ForgotPassword';
 import { NotFound } from '../pages/NotFound';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import { AdminRoute } from '../components/auth/AdminRoute';
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
             { path: 'tienda', Component: Shop },
             { path: 'login', Component: Login },
             { path: 'registro', Component: Signup },
+            { path: 'recuperar-contrasena', Component: ForgotPassword },
             {
                 path: 'producto/:id',
                 element: <LazyPage><ProductDetail /></LazyPage>,

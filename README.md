@@ -253,4 +253,4 @@ startCommand = "java -jar target/*.jar"
 ## Contacto
 
 **Mates Aconcagua** — Mendoza, Argentina  
-Email: [lorenzocona14@gmail.com](mailto:lorenzocona14@gmail.com)
+Email: [enzocanepa02@gmail.com](mailto:enzocanepa02@gmail.com)
