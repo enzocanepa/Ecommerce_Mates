@@ -38,7 +38,10 @@
       "Read(//c/Users/enzoc/AppData/Local/npm-cache/**)",
       "Bash(pnpm add *)",
       "Bash(pnpm build *)",
-      "Bash(pnpm run *)"
+      "Bash(pnpm run *)",
+      "Bash(git -C \"/c/Users/enzoc/Desktop/Ecommerce_Mates\" status)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\enzoc\\\\Desktop\\\\Ecommerce_Mates\" -Recurse -Depth 2)",
+      "Bash(Select-Object -First 100)"
     ],
     "additionalDirectories": [
       "c:\\Users\\enzoc\\Desktop\\api\\api",
