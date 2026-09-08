@@ -222,7 +222,9 @@ export function About() {
                         </p>
                         <div className="relative flex flex-wrap gap-3.5 justify-center">
                             <a
-                                href="mailto:enzocanepa960@gmail.com"
+                                href="https://mail.google.com/mail/?view=cm&fs=1&to=enzocanepa960@gmail.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 font-bold rounded-full transition-all duration-200 active:translate-y-px"
                                 style={{
                                     background: '#c06a34',
