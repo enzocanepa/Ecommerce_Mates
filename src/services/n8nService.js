@@ -6,6 +6,8 @@ const N8N_URLS = {
     compraFallida:     import.meta.env.VITE_N8N_COMPRA_FALLIDA_URL,
 };
 
+const WEBHOOK_SECRET = import.meta.env.VITE_N8N_WEBHOOK_SECRET;
+
 const enviarWebhook = async (evento, payload) => {
     try {
         const url = N8N_URLS[evento];
@@ -13,7 +15,10 @@ const enviarWebhook = async (evento, payload) => {
 
         fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                ...(WEBHOOK_SECRET ? { 'x-webhook-secret': WEBHOOK_SECRET } : {}),
+            },
             body: JSON.stringify(payload)
         }).catch(err => console.error(`Error enviando webhook ${evento}:`, err));
 

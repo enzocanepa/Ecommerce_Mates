@@ -147,7 +147,7 @@ export function CheckoutResult() {
 
     // Notify on success — waits for user to load after MP redirect
 useEffect(() => {
-    if (resultType === 'failure') return;
+    if (resultType !== 'success') return; // 'pending' no es una compra confirmada: no avisar éxito
     if (successWebhookSent.current) return;
 
     // Esperamos hasta 5 segundos a que el user cargue
@@ -323,7 +323,7 @@ useEffect(() => {
                     <p style={{ fontSize: '12.5px', color: '#6c7062', marginTop: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 9.5 9.5 0 0 1-4-1L3 20l1.1-4.9A8.38 8.38 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
                         {isOk ? '¿Dudas con tu pedido?' : '¿Necesitás ayuda?'}{' '}
-                        <a href="mailto:lorenzocona14@gmail.com" style={{ color: '#566a2f', fontWeight: 700 }}>Escribinos</a>
+                        <a href="mailto:enzocanepa960@gmail.com" style={{ color: '#566a2f', fontWeight: 700 }}>Escribinos</a>
                     </p>
                 </div>
             </div>

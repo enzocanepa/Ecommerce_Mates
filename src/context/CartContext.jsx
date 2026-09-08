@@ -106,7 +106,10 @@ export function CartProvider({ children }) {
         setCart(prev => prev.map(i => i.id === productId ? { ...i, quantity } : i));
     }, []);
 
-    const clearCart = useCallback(() => setCart([]), []);
+    const clearCart = useCallback(() => {
+        clearTimeout(abandonedCartTimer.current);
+        setCart([]);
+    }, []);
 
     const checkout = useCallback(async () => {
         if (!user)        throw new Error('Debes iniciar sesión para realizar una compra');
